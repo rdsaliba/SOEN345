@@ -72,5 +72,43 @@ public class VetTests {
 		sortedSpecialties.add(mockSpeciality1);
 		assertEquals(sortedSpecialties, vet.getSpecialties());
     }
+    
+    @Test
+    public void testGetNrSpecialties() {
+    	Vet vet = new Vet();
+    	
+		Specialty mockSpeciality1 = mock(Specialty.class);
+		Specialty mockSpeciality2 = mock(Specialty.class);
+		Specialty mockSpeciality3 = mock(Specialty.class);
+		
+		vet.addSpecialty(mockSpeciality1);
+		vet.addSpecialty(mockSpeciality2);
+		vet.addSpecialty(mockSpeciality3);
+	
+		assertEquals(3, vet.getNrOfSpecialties());
+    }
+    
+    @Test
+    public void testAddSpecialty() {
+    	Vet vet = new Vet();
+    	
+		Specialty mockSpeciality1 = mock(Specialty.class);
+		assertEquals(0, vet.getNrOfSpecialties());
+		
+		vet.addSpecialty(mockSpeciality1);
+		assertEquals(1, vet.getNrOfSpecialties());
+    }
+    
+    @Test
+    public void testGetSpecialtiesInteral() {
+    	Vet vet = new Vet();
+    	
+		Specialty mockSpeciality1 = mock(Specialty.class);
+		assertNotEquals(null, vet.getSpecialties());
+		assertEquals(0, vet.getSpecialties().size());
+		
+		vet.addSpecialty(mockSpeciality1);
+		assertEquals(mockSpeciality1, vet.getSpecialties().get(0));
+    }
 
 }
