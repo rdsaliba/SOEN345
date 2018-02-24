@@ -97,6 +97,7 @@ public class VetTests {
 		
 		vet.addSpecialty(mockSpeciality1);
 		assertEquals(1, vet.getNrOfSpecialties());
+		assertEquals(mockSpeciality1, vet.getSpecialties().get(0));
     }
     
     @Test
