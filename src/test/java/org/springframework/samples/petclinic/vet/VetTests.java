@@ -16,6 +16,12 @@
 package org.springframework.samples.petclinic.vet;
 
 import org.junit.Test;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.springframework.util.SerializationUtils;
 
@@ -38,6 +44,33 @@ public class VetTests {
         assertThat(other.getFirstName()).isEqualTo(vet.getFirstName());
         assertThat(other.getLastName()).isEqualTo(vet.getLastName());
         assertThat(other.getId()).isEqualTo(vet.getId());
+    }
+    
+    @Test
+    public void testGetSpecialtiesSorted() {
+    	Vet vet = new Vet();
+    	
+		Specialty mockSpeciality1 = mock(Specialty.class);
+		Specialty mockSpeciality2 = mock(Specialty.class);
+		Specialty mockSpeciality3 = mock(Specialty.class);
+		
+		mockSpeciality1.setName("Dog");
+		mockSpeciality2.setName("Cat");
+		mockSpeciality3.setName("Bear");
+		
+		when(mockSpeciality1.getName()).thenReturn("Dog");
+		when(mockSpeciality2.getName()).thenReturn("Cat");
+		when(mockSpeciality3.getName()).thenReturn("Bear");
+		
+		vet.addSpecialty(mockSpeciality1);
+		vet.addSpecialty(mockSpeciality2);
+		vet.addSpecialty(mockSpeciality3);
+		
+		List<Specialty> sortedSpecialties = new ArrayList<>(3);
+		sortedSpecialties.add(mockSpeciality3);
+		sortedSpecialties.add(mockSpeciality2);
+		sortedSpecialties.add(mockSpeciality1);
+		assertEquals(sortedSpecialties, vet.getSpecialties());
     }
 
 }
