@@ -1,9 +1,12 @@
 package org.springframework.samples.petclinic.owner;
 
+import java.util.*;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 
 /**
@@ -60,5 +63,26 @@ public class OwnerTests {
 	        // Test with empty string
 	        owner.setTelephone("");
 	        assertEquals(owner.getTelephone(), "");
+	    }
+	    
+	    @Test
+	    public void testPetsIntervalGetterSetter() {
+	    	
+	    		// Mock Pets
+	    		Pet mockPet1 = mock(Pet.class);
+	    		Pet mockPet2 = mock(Pet.class);
+	    		Pet mockPet3 = mock(Pet.class);
+	    		Set<Pet> petSet = new HashSet<>();
+	    		
+	        // Test with nothing in set
+	        assertEquals(owner.getPetsInternal(), petSet);
+
+	        // Test with Pets in set
+	        petSet.add(mockPet1);
+	    		petSet.add(mockPet2);
+	    		petSet.add(mockPet3);
+	    		owner.setPetsInternal(petSet);
+	    		assertEquals(owner.getPetsInternal(), petSet);
+	    		
 	    }
 }
