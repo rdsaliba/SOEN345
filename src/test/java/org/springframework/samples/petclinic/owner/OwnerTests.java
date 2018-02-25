@@ -99,6 +99,10 @@ public class OwnerTests {
 			mockPet2.setName("Jay");
 			mockPet3.setName("Pac");
 			
+			when(mockPet1.isNew()).thenReturn(true);
+			when(mockPet2.isNew()).thenReturn(true);
+			when(mockPet3.isNew()).thenReturn(true);
+			
 			when(mockPet1.getName()).thenReturn("Kanye");
 			when(mockPet2.getName()).thenReturn("Jay");
 			when(mockPet3.getName()).thenReturn("Pac");
@@ -108,9 +112,11 @@ public class OwnerTests {
 			Owner.addPet(mockPet3);
 		
 			List<Pet> sortedPets = new ArrayList<>(3);
-			sortedPets.add(mockPet1);
 			sortedPets.add(mockPet2);
+			sortedPets.add(mockPet1);
 			sortedPets.add(mockPet3);
+			System.out.println(sortedPets);
+			System.out.println(Owner.getPets());
 			assertEquals(sortedPets, Owner.getPets());
 			
 		}
