@@ -146,7 +146,11 @@ public class OwnerTests {
 
 		@Test
 		public void toStringTest(){
-
+			
+			Owner ownerNull = new Owner();
+			String expectedNull ="";
+			assertEquals(expectedNull, ownerNull.toString());
+			
 			ToStringCreator make = new ToStringCreator(owner);
 				String expected = make
 				.append("2121", owner.getId())
@@ -160,7 +164,6 @@ public class OwnerTests {
 
 			String result = owner.toString();
 			assertEquals(expected, result); 
-
 		}
 
 }
