@@ -1,4 +1,6 @@
 package org.springframework.samples.petclinic.owner;
+import org.springframework.util.SerializationUtils;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.*;
 import static org.junit.Assert.*;
@@ -25,6 +27,28 @@ public class OwnerTests {
 	        owner = new Owner();
 	    }
 
+	    
+	    @Test
+        public void testSerialization() {
+            Owner test = new Owner();
+            test.setFirstName("Peter");
+            test.setLastName("Rigby");
+            test.setAddress("street");
+            test.setTelephone("514-111-111");
+            test.setCity("Montreal");
+            test.setId(12345);
+            
+            Owner TestOwner = (Owner) SerializationUtils
+                .deserialize(SerializationUtils.serialize(test));
+            
+            assertThat(TestOwner.getFirstName()).isEqualTo(test.getFirstName());
+            assertThat(TestOwner.getLastName()).isEqualTo(test.getLastName());
+            assertThat(TestOwner.getAddress()).isEqualTo(test.getAddress());
+            assertThat(TestOwner.getTelephone()).isEqualTo(test.getTelephone());
+            assertThat(TestOwner.getCity()).isEqualTo(test.getCity());
+            assertThat(TestOwner.getId()).isEqualTo(test.getId());
+	        }
+	    
 	    @Test
 	    public void testAddressGetterSetter() {
 	        // Test with nothing set
