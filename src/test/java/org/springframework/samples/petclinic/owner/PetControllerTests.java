@@ -40,7 +40,7 @@ public class PetControllerTests {
 
     private static final int TEST_OWNER_ID = 1;
     private static final int TEST_PET_ID = 1;
-
+    private static final int TEST_OWNER_ID_DUPLICATE = 1;
 
     @Autowired
     private MockMvc mockMvc;
@@ -59,7 +59,6 @@ public class PetControllerTests {
         given(this.pets.findPetTypes()).willReturn(Lists.newArrayList(cat));
         given(this.owners.findById(TEST_OWNER_ID)).willReturn(new Owner());
         given(this.pets.findById(TEST_PET_ID)).willReturn(new Pet());
-
     }
 
     @Test
@@ -91,6 +90,26 @@ public class PetControllerTests {
             .andExpect(model().attributeHasErrors("pet"))
             .andExpect(model().attributeHasFieldErrors("pet", "type"))
             .andExpect(model().attributeHasFieldErrorCode("pet", "type", "required"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("pets/createOrUpdatePetForm"));
+    }
+
+    @Test
+    public void testProcessCreationFormDuplicatePet() throws Exception {
+        Owner dupOwner = new Owner();
+        Pet dupPet = new Pet();
+        dupPet.setName("Bob");
+        dupOwner.addPet(dupPet);
+        dupPet.setId(123);
+        given(this.owners.findById(TEST_OWNER_ID_DUPLICATE)).willReturn(dupOwner);
+
+        mockMvc.perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID_DUPLICATE)
+            .param("name", "Bob")
+            .param("type", "hamster")
+            .param("birthDate", "2018-02-25")
+        )
+            .andExpect(model().attributeHasNoErrors("owner"))
+            .andExpect(model().attributeHasErrors("pet"))
             .andExpect(status().isOk())
             .andExpect(view().name("pets/createOrUpdatePetForm"));
     }
