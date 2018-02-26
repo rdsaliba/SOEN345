@@ -91,7 +91,7 @@ public class OwnerTests {
 		@Test
 		public void testgetPets(){
 			Owner Owner = new Owner();
-    	
+			
 			Pet mockPet1 = mock(Pet.class);
 			Pet mockPet2 = mock(Pet.class);
 			Pet mockPet3 = mock(Pet.class);
@@ -125,29 +125,22 @@ public class OwnerTests {
 
 			Owner Owner = new Owner();
 
-			//Mock pet
 			Pet mockPet1 = mock(Pet.class);
 			Pet mockPet2 = mock(Pet.class);
 
-			//Set names
 			mockPet1.setName("Kanye");
 			mockPet2.setName("Jay");
 
-			//Setting only one to true
 			when(mockPet1.isNew()).thenReturn(true);
 
-			//Get names
 			when(mockPet1.getName()).thenReturn("Kanye");
 			when(mockPet2.getName()).thenReturn("Jay");
 			
-			//Add pets
 			Owner.addPet(mockPet1);
 			Owner.addPet(mockPet2);
 
-			//Test if add works
 			assertEquals(Owner.getPet(mockPet1.getName()), mockPet1);
 			assertEquals(Owner.getPet(mockPet2.getName()), null);
-
 		}
 
 }
