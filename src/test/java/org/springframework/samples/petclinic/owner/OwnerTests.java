@@ -1,6 +1,8 @@
 package org.springframework.samples.petclinic.owner;
 
 import java.util.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -8,11 +10,11 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
-
 /**
  * Test class for {@link Owner}
  *
- * @author Mazen
+ * @author Mazen & Tajbid
+ *
  */
 public class OwnerTests {
 	
@@ -84,5 +86,61 @@ public class OwnerTests {
 	    		owner.setPetsInternal(petSet);
 	    		assertEquals(owner.getPetsInternal(), petSet);
 	    		
-	    }
+		}
+		
+		@Test
+		public void testgetPets(){
+			Owner Owner = new Owner();
+			
+			Pet mockPet1 = mock(Pet.class);
+			Pet mockPet2 = mock(Pet.class);
+			Pet mockPet3 = mock(Pet.class);
+			
+			mockPet1.setName("Kanye");
+			mockPet2.setName("Jay");
+			mockPet3.setName("Pac");
+			
+			when(mockPet1.isNew()).thenReturn(true);
+			when(mockPet2.isNew()).thenReturn(true);
+			when(mockPet3.isNew()).thenReturn(true);
+			
+			when(mockPet1.getName()).thenReturn("Kanye");
+			when(mockPet2.getName()).thenReturn("Jay");
+			when(mockPet3.getName()).thenReturn("Pac");
+
+			Owner.addPet(mockPet1);
+			Owner.addPet(mockPet2);
+			Owner.addPet(mockPet3);
+		
+			List<Pet> sortedPets = new ArrayList<>(3);
+			sortedPets.add(mockPet2);
+			sortedPets.add(mockPet1);
+			sortedPets.add(mockPet3);
+			assertEquals(sortedPets, Owner.getPets());
+			
+		}
+
+		@Test
+		public void testAddPet(){
+
+			Owner Owner = new Owner();
+
+			Pet mockPet1 = mock(Pet.class);
+			Pet mockPet2 = mock(Pet.class);
+
+			mockPet1.setName("Kanye");
+			mockPet2.setName("Jay");
+
+			when(mockPet1.isNew()).thenReturn(true);
+
+			when(mockPet1.getName()).thenReturn("Kanye");
+			when(mockPet2.getName()).thenReturn("Jay");
+			
+			Owner.addPet(mockPet1);
+			Owner.addPet(mockPet2);
+
+			assertEquals(Owner.getPet(mockPet1.getName()), mockPet1);
+			assertEquals(Owner.getPet(mockPet2.getName()), null);
+		}
+
 }
