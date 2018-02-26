@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import org.springframework.core.style.ToStringCreator;
 
 /**
  * Test class for {@link Owner}
@@ -141,6 +142,25 @@ public class OwnerTests {
 
 			assertEquals(Owner.getPet(mockPet1.getName()), mockPet1);
 			assertEquals(Owner.getPet(mockPet2.getName()), null);
+		}
+
+		@Test
+		public void toStringTest(){
+
+			ToStringCreator make = new ToStringCreator(owner);
+				String expected = make
+				.append("2121", owner.getId())
+				.append("NEW", owner.isNew())
+				.append("Doe", owner.getLastName())
+				.append("John", owner.getFirstName())
+				.append("Sherbrooke", owner.getAddress())
+				.append("Montreal", owner.getCity())
+				.append("514-848-2424", owner.getTelephone())
+				.toString();
+
+			String result = owner.toString();
+			assertEquals(expected, result); 
+
 		}
 
 }
