@@ -13,7 +13,8 @@ import static org.mockito.Mockito.mock;
 /**
  * Test class for {@link Owner}
  *
- * @author Mazen
+ * @author Mazen & Tajbid
+ *
  */
 public class OwnerTests {
 	
@@ -115,9 +116,38 @@ public class OwnerTests {
 			sortedPets.add(mockPet2);
 			sortedPets.add(mockPet1);
 			sortedPets.add(mockPet3);
-			System.out.println(sortedPets);
-			System.out.println(Owner.getPets());
 			assertEquals(sortedPets, Owner.getPets());
 			
 		}
+
+		@Test
+		public void testAddPet(){
+
+			Owner Owner = new Owner();
+
+			//Mock pet
+			Pet mockPet1 = mock(Pet.class);
+			Pet mockPet2 = mock(Pet.class);
+
+			//Set names
+			mockPet1.setName("Kanye");
+			mockPet2.setName("Jay");
+
+			//Setting only one to true
+			when(mockPet1.isNew()).thenReturn(true);
+
+			//Get names
+			when(mockPet1.getName()).thenReturn("Kanye");
+			when(mockPet2.getName()).thenReturn("Jay");
+			
+			//Add pets
+			Owner.addPet(mockPet1);
+			Owner.addPet(mockPet2);
+
+			//Test if add works
+			assertEquals(Owner.getPet(mockPet1.getName()), mockPet1);
+			assertEquals(Owner.getPet(mockPet2.getName()), null);
+
+		}
+
 }
