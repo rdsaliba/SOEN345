@@ -93,23 +93,23 @@ public class OwnerTests {
 	    }
 	    
 	    @Test
-	    public void testPetsIntervalGetterSetter() {
+	    public void testPetsInternalGetterSetter() {
 	    	
-	    		// Mock Pets
-	    		Pet mockPet1 = mock(Pet.class);
-	    		Pet mockPet2 = mock(Pet.class);
-	    		Pet mockPet3 = mock(Pet.class);
-	    		Set<Pet> petSet = new HashSet<>();
+    		// Mock Pets
+    		Pet mockPet1 = mock(Pet.class);
+    		Pet mockPet2 = mock(Pet.class);
+    		Pet mockPet3 = mock(Pet.class);
+    		Set<Pet> petSet = new HashSet<>();
 	    		
 	        // Test with nothing in set
 	        assertEquals(owner.getPetsInternal(), petSet);
 
 	        // Test with Pets in set
 	        petSet.add(mockPet1);
-	    		petSet.add(mockPet2);
-	    		petSet.add(mockPet3);
-	    		owner.setPetsInternal(petSet);
-	    		assertEquals(owner.getPetsInternal(), petSet);
+    		petSet.add(mockPet2);
+    		petSet.add(mockPet3);
+    		owner.setPetsInternal(petSet);
+    		assertEquals(owner.getPetsInternal(), petSet);
 	    		
 		}
 		
@@ -166,6 +166,17 @@ public class OwnerTests {
 
 			assertEquals(Owner.getPet(mockPet1.getName()), mockPet1);
 			assertEquals(Owner.getPet(mockPet2.getName()), null);
+		}
+		
+		@Test
+		public void getPet() {
+			Owner owner = new Owner();
+			Pet mockPet = mock(Pet.class);
+			when(mockPet.getName()).thenReturn("Tony");
+			when(mockPet.isNew()).thenReturn(true);
+			owner.addPet(mockPet);
+			assertEquals(null, owner.getPet("Montana"));
+			assertEquals(mockPet, owner.getPet("Tony"));
 		}
 
 		@Test
