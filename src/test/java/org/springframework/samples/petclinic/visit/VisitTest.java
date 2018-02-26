@@ -1,5 +1,9 @@
 package org.springframework.samples.petclinic.visit;
 
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.springframework.util.SerializationUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -31,9 +35,22 @@ public class VisitTest {
 	}
 
 	@Test
+     public void testSerialization() {
+		Date date = new Date();
+        Visit visit = new Visit();
+        visit.setDescription("test");
+        visit.setDate(date);
+        visit.setPetId(12345);
+        Visit testVisit = (Visit) SerializationUtils.deserialize(SerializationUtils.serialize(visit));
+        assertThat(testVisit.getDescription()).isEqualTo(visit.getDescription());
+        assertThat(testVisit.getDate()).isEqualTo(visit.getDate());
+        assertThat(testVisit.getPetId()).isEqualTo(visit.getPetId());
+     }
+	
+	@Test
 	public void testDateGetterSetter() {
 
-		Date testDate=null;
+		Date testDate = null;
 		SimpleDateFormat testDateFormat = new SimpleDateFormat ("yyyy-MM-dd");
 		try{
 			testDate = testDateFormat.parse("2018-02-24");
