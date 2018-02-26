@@ -48,7 +48,7 @@ public class OwnerTests {
             assertThat(TestOwner.getTelephone()).isEqualTo(test.getTelephone());
             assertThat(TestOwner.getCity()).isEqualTo(test.getCity());
             assertThat(TestOwner.getId()).isEqualTo(test.getId());
-	        }
+	    }
 	    
 	    @Test
 	    public void testAddressGetterSetter() {
