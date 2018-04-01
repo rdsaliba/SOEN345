@@ -12,6 +12,8 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.samples.petclinic.owner.OwnerDao;
+import org.springframework.samples.petclinic.owner.OwnerService;
 
 @Configuration
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
@@ -42,4 +44,9 @@ public class DatabaseRouter {
         return routingDataSource;
     }
 
+    @Bean
+    public OwnerService ownerService() {
+        return new OwnerService(new OwnerDao(dataSource()));
+    }
+    
 }

@@ -11,5 +11,9 @@ public class DatabaseThreadContext {
     public static Object getCurrentDatabase() {
         return current.get();
     }
+    
+    public static void clearCurrentDatabase() {
+        current.remove();
+    }
 
 }
