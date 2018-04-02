@@ -13,13 +13,13 @@ public class Forklift {
     private static Logger log = LoggerFactory
         .getLogger(Forklift.class);
 
-    private static Connection connMySQL = null;
-    private static Connection connPostgres = null;
-    private static ResultSet resultSet = null;
-    private static Statement statementPostgres = null;
+    private  Connection connMySQL = null;
+    private  Connection connPostgres = null;
+    private  ResultSet resultSet = null;
+    private  Statement statementPostgres = null;
 
     // Will rename this to forklift() so that we can just call it elsewhere
-    public static void main(String [] args){
+    public void forklift(){
 
         try{
             setUpConnection();
@@ -86,13 +86,13 @@ public class Forklift {
        return tables;
     }
 */
-    private static ResultSet getTableData(String tableName){
+    private ResultSet getTableData(String tableName, Connection connection){
 
         Collection<String> tables = null;
         try{
-            Statement statement = connMySQL.createStatement();
+            Statement statement = connection.createStatement();
             String query1 =
-                "SELECT * FROM " + tableName +";";
+                "SELECT * FROM " + tableName +" ORDER BY id ASC;";
             resultSet = statement.executeQuery(query1);
         } catch (SQLException ce){
             log.info("ClassNotFoundException exception");
@@ -103,15 +103,15 @@ public class Forklift {
         return resultSet;
     }
 
-    private static void setUpConnection(){
+    private void setUpConnection(){
         String databaseNameMySQL = "petclinic";
         String userNameMySQL = "root";
-        String passwordMySQL = "test";
+        String passwordMySQL = "pizza123";
         String mySQLPort = "3306";
 
         String databaseNamePostgres = "petclinic";
         String userNamePostgres = "postgres";
-        String passwordPostgres = "test";
+        String passwordPostgres = "laxman123";
         String postgresPort = "5432";
 
         String hostUrl = "localhost";
@@ -134,8 +134,8 @@ public class Forklift {
         }
     }
 
-    private static String getInsertIntoValues(String tableName){
-        ResultSet temp = getTableData(tableName);
+    private String getInsertIntoValues(String tableName){
+        ResultSet temp = getTableData(tableName, connMySQL);
         String numValue="";
 
         try{
