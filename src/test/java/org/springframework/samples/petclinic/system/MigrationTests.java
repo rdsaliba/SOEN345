@@ -10,10 +10,12 @@ import org.springframework.samples.petclinic.database.Database;
 import org.springframework.samples.petclinic.database.DatabaseThreadContext;
 import org.springframework.samples.petclinic.owner.Owner;
 import org.springframework.samples.petclinic.owner.OwnerRepository;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
+@DirtiesContext
 public class MigrationTests {
 
     private static final int TEST_OWNER_ID = 1;

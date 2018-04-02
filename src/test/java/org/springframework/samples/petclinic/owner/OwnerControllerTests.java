@@ -38,6 +38,9 @@ public class OwnerControllerTests {
 
     @MockBean
     private OwnerRepository owners;
+    
+    @MockBean
+    private OwnerService ownerService;
 
     private Owner george;
 
