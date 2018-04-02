@@ -44,15 +44,16 @@ public class Migration {
                 }catch (Exception e){
 
                 }
-                
+
 	    	}
         }catch(Exception e){
 
         }
-        System.out.println(totalThreshold/count);
         // Remove everything from old database
         if(totalThreshold/count > 0.99) {
         CleanOldDatabase cleanDbOld = new CleanOldDatabase();
+
+        // Comment out to not remove the MySQL database for now
         cleanDbOld.removeOldData();
         }
     }
