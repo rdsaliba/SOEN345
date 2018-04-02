@@ -17,7 +17,7 @@ public class CleanOldDatabase {
 	private void setUpConnection(){
         String databaseNameMySQL = "petclinic";
         String userNameMySQL = "root";
-        String passwordMySQL = "12345";
+        String passwordMySQL = "test";
         String mySQLPort = "3306";
 
         String hostUrl = "localhost";

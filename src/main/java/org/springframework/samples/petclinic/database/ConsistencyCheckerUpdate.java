@@ -245,4 +245,17 @@ public class ConsistencyCheckerUpdate {
             log.info("Unexpected Exception");
         }
     }
+
+    public void updateHashBackup(String tableName, String rowNumber, String hashBackup){
+        try{
+            Statement statement = connPostgres.createStatement();
+            String query1 =
+                "INSERT INTO backup_hash VALUE (" + tableName + ", " + rowNumber + ", " + hashBackup + ");";
+            resultSet = statement.executeQuery(query1);
+        } catch (SQLException ce){
+            log.info("ClassNotFoundException exception");
+        }catch (Exception ce){
+            log.info("Unexpected Exception");
+        }
+    }
 }

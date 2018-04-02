@@ -13,10 +13,12 @@ public class ConsistencyChecker {
 	private int	errorOccurance;
 	private int totalRowChecked;
 	private double thresholdLevel;
+    private boolean isHashStored;
 
 	public ConsistencyChecker(String oldData [][],String newData [][]) {
 		this.oldData=oldData;
 		this.newData=newData;
+        isHashStored = false;
 	}
 
 	public int checkConsistency(String Table) throws HashGenerationException {
@@ -59,11 +61,27 @@ public class ConsistencyChecker {
 			}
 		}
 		thresholdCheck();
+		if(getThresholdLevel()>99){
+            hashData(Table);
+        }
 		return errorOccurance;
 	}
 
+    public void hashData(String Table) throws HashGenerationException {
+
+        for (int i=0; i<oldData.length;i++)
+        {
+            totalRowChecked++;
+            for (int j=0; j<oldData[0].length;j++) {
+                String data_old = HashData.getHashFromString(oldData[i][j]);
+                ConsistencyCheckerUpdate consistencyCheckerUpdate = new ConsistencyCheckerUpdate();
+                consistencyCheckerUpdate.updateHashBackup(Table, oldData[i][0], data_old);
+            }
+        }
+    }
+
 	public void thresholdCheck() {
-		
+
 		if(errorOccurance == 0) {
 			setThresholdLevel(100);
 			System.out.println("Success! Total amount of rows checked: " + totalRowChecked +  "\ntreshold level: 100%");
@@ -72,11 +90,11 @@ public class ConsistencyChecker {
 			System.out.println("Error! here are the total row checked: " + totalRowChecked + "\ntreshold level: " + getThresholdLevel() +"%");
 		}
 	}
-	
+
 	public void setThresholdLevel(double thresholdLevel) {
 		this.thresholdLevel = thresholdLevel;
 	}
-	
+
 	public double getThresholdLevel() {
 		return thresholdLevel;
 	}

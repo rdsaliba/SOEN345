@@ -106,12 +106,12 @@ public class Forklift {
     private void setUpConnection(){
         String databaseNameMySQL = "petclinic";
         String userNameMySQL = "root";
-        String passwordMySQL = "pizza123";
+        String passwordMySQL = "test";
         String mySQLPort = "3306";
 
         String databaseNamePostgres = "petclinic";
         String userNamePostgres = "postgres";
-        String passwordPostgres = "laxman123";
+        String passwordPostgres = "test";
         String postgresPort = "5432";
 
         String hostUrl = "localhost";

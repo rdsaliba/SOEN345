@@ -34,7 +34,22 @@ public class Migration {
                 System.out.println("The new data is: " + eachTable);
 
                 String newData [][] = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerPostgres(eachTable);
+
+                for(int i=0; i<newData.length; i++) {
+                    for(int j=0; j<newData[0].length; j++) {
+                        System.out.println(newData[i][j] + " ");
+                    }
+                }
+
+                System.out.println("The old data is: " + eachTable);
+
                 String oldData [][] = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerMySQL(eachTable);
+
+                for(int i=0; i<oldData.length; i++) {
+                    for (int j = 0; j < oldData[0].length; j++) {
+                        System.out.println(oldData[i][j] + " ");
+                    }
+                }
 
                 consistencyChecker = new ConsistencyChecker(oldData, newData);
                 count++;
