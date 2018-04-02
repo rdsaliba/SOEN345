@@ -8,18 +8,22 @@ import java.util.Date;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.samples.petclinic.owner.Owner;
 import org.springframework.samples.petclinic.owner.OwnerRepository;
+import org.springframework.samples.petclinic.owner.OwnerService;
 import org.springframework.samples.petclinic.owner.Pet;
 import org.springframework.samples.petclinic.owner.PetRepository;
+import org.springframework.samples.petclinic.owner.PetService;
 import org.springframework.samples.petclinic.owner.PetType;
+import org.springframework.samples.petclinic.owner.VisitService;
 import org.springframework.samples.petclinic.vet.Vet;
 import org.springframework.samples.petclinic.vet.VetRepository;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.samples.petclinic.visit.VisitRepository;
-import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +49,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 @RunWith(SpringRunner.class)
-@DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
+@SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
+@DirtiesContext
 public class ClinicServiceTests {
 
     @Autowired
@@ -59,6 +64,15 @@ public class ClinicServiceTests {
 
     @Autowired
     protected VetRepository vets;
+    
+    @MockBean
+    private OwnerService ownerService;
+    
+    @MockBean
+    private PetService petService;
+    
+    @MockBean
+    private VisitService visitService;
 
     @Test
     public void shouldFindOwnersByLastName() {

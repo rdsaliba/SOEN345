@@ -15,7 +15,14 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import java.util.Collection;
+import java.util.Map;
+
+import javax.sql.DataSource;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.database.Database;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,10 +32,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.validation.Valid;
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * @author Juergen Hoeller
@@ -48,6 +51,9 @@ class OwnerController {
         this.owners = clinicService;
     }
 
+    @Autowired
+    OwnerService ownerService;
+    
     @InitBinder
     public void setAllowedFields(WebDataBinder dataBinder) {
         dataBinder.setDisallowedFields("id");
@@ -65,7 +71,12 @@ class OwnerController {
         if (result.hasErrors()) {
             return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
         } else {
-            this.owners.save(owner);
+            //Regular write
+            int id = ownerService.saveNew(Database.PRIMARY, owner);
+            //Shadow write
+            ownerService.saveNew(Database.SECONDARY, owner);
+            
+            owner.setId(id);
             return "redirect:/owners/" + owner.getId();
         }
     }
@@ -85,7 +96,13 @@ class OwnerController {
         }
 
         // find owners by last name
-        Collection<Owner> results = this.owners.findByLastName(owner.getLastName());
+        Collection<Owner> results = ownerService.findByLastName(Database.PRIMARY, owner.getLastName());
+        // Shadow read
+        Collection<Owner> results2 = ownerService.findByLastName(Database.SECONDARY, owner.getLastName());
+        
+        System.out.println(results);
+        System.out.println(results2);
+        
         if (results.isEmpty()) {
             // no owners found
             result.rejectValue("lastName", "notFound", "not found");
@@ -103,7 +120,14 @@ class OwnerController {
 
     @GetMapping("/owners/{ownerId}/edit")
     public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
-        Owner owner = this.owners.findById(ownerId);
+        // find owners by last name
+        Owner owner = ownerService.findById(Database.PRIMARY, ownerId);
+        // Shadow read
+        Owner owner2 = ownerService.findById(Database.SECONDARY, ownerId);
+        
+        System.out.println(owner);
+        System.out.println(owner2);
+    
         model.addAttribute(owner);
         return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
     }
@@ -114,7 +138,11 @@ class OwnerController {
             return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
         } else {
             owner.setId(ownerId);
-            this.owners.save(owner);
+            //Regular write
+            ownerService.update(Database.PRIMARY, owner);
+            //Shadow write
+            ownerService.update(Database.SECONDARY, owner);
+            
             return "redirect:/owners/{ownerId}";
         }
     }

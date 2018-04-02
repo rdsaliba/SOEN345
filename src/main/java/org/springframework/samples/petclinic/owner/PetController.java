@@ -15,16 +15,24 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import java.util.Collection;
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.database.Database;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.Collection;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @author Juergen Hoeller
@@ -45,8 +53,17 @@ class PetController {
         this.owners = owners;
     }
 
+    @Autowired
+    PetService petService;
+    
     @ModelAttribute("types")
     public Collection<PetType> populatePetTypes() {
+        // find owners by last name
+        List<PetType> petTypes = petService.findPetTypes(Database.PRIMARY);
+        // Shadow read
+        List<PetType> petTypes2 = petService.findPetTypes(Database.SECONDARY);
+        System.out.println(petTypes);
+        System.out.println(petTypes2);
         return this.pets.findPetTypes();
     }
 
@@ -83,13 +100,23 @@ class PetController {
             model.put("pet", pet);
             return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
         } else {
-            this.pets.save(pet);
+            //Regular write
+            petService.saveNew(Database.PRIMARY, pet);
+            //Shadow write
+            petService.saveNew(Database.SECONDARY, pet);
             return "redirect:/owners/{ownerId}";
         }
     }
 
     @GetMapping("/pets/{petId}/edit")
     public String initUpdateForm(@PathVariable("petId") int petId, ModelMap model) {
+        // find owners by last name
+        Pet pet1 = petService.findById(Database.PRIMARY, petId);
+        // Shadow read
+        Pet pet2 = petService.findById(Database.SECONDARY, petId);
+        System.out.println(pet1);
+        System.out.println(pet2);
+        
         Pet pet = this.pets.findById(petId);
         model.put("pet", pet);
         return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
@@ -103,7 +130,11 @@ class PetController {
             return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
         } else {
             owner.addPet(pet);
-            this.pets.save(pet);
+            //Regular write
+            petService.update(Database.PRIMARY, pet);
+            //Shadow write
+            petService.update(Database.SECONDARY, pet);
+            
             return "redirect:/owners/{ownerId}";
         }
     }

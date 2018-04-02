@@ -50,6 +50,9 @@ public class PetControllerTests {
 
     @MockBean
     private OwnerRepository owners;
+    
+    @MockBean
+    private PetService petService;
 
     @Before
     public void setup() {
