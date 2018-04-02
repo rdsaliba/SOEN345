@@ -96,11 +96,12 @@ class OwnerController {
         }
 
         // find owners by last name
-        Collection<Owner> results = ownerService.findByLastName(Database.PRIMARY, owner.getLastName());
+        Collection<Owner> results = this.owners.findByLastName(owner.getLastName());
+        Collection<Owner> results1 = ownerService.findByLastName(Database.PRIMARY, owner.getLastName());
         // Shadow read
         Collection<Owner> results2 = ownerService.findByLastName(Database.SECONDARY, owner.getLastName());
         
-        System.out.println(results);
+        System.out.println(results1);
         System.out.println(results2);
         
         if (results.isEmpty()) {
@@ -120,12 +121,13 @@ class OwnerController {
 
     @GetMapping("/owners/{ownerId}/edit")
     public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
-        // find owners by last name
-        Owner owner = ownerService.findById(Database.PRIMARY, ownerId);
+        // find owners by id
+    	Owner owner = this.owners.findById(ownerId);
+        Owner owner1 = ownerService.findById(Database.PRIMARY, ownerId);
         // Shadow read
         Owner owner2 = ownerService.findById(Database.SECONDARY, ownerId);
         
-        System.out.println(owner);
+        System.out.println(owner1);
         System.out.println(owner2);
     
         model.addAttribute(owner);
