@@ -19,7 +19,7 @@ public class ConsistencyChecker {
 		this.newData=newData;
 	}
 
-	public void checkConsistency(String Table) throws HashGenerationException {
+	public int checkConsistency(String Table) throws HashGenerationException {
 		errorOccurance = 0;
 		totalRowChecked = 0;
 		System.out.println("THIS IS THE TABLE NAME: " + Table);
@@ -59,6 +59,7 @@ public class ConsistencyChecker {
 			}
 		}
 		thresholdCheck();
+		return errorOccurance;
 	}
 
 	public void thresholdCheck() {
