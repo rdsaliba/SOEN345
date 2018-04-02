@@ -31,7 +31,6 @@ public class Migration {
         try {
 	        String[] tables = {"owners", "types", "pets", "specialties", "vets", "visits"};
 	    	for(String eachTable: tables) {
-                System.out.println("The new data is: " + eachTable);
 
                 String newData [][] = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerPostgres(eachTable);
                 String oldData [][] = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerMySQL(eachTable);
@@ -44,16 +43,16 @@ public class Migration {
                 }catch (Exception e){
 
                 }
-                
+
 	    	}
         }catch(Exception e){
 
         }
-        System.out.println(totalThreshold/count);
         // Remove everything from old database
         if(totalThreshold/count > 0.99) {
-        CleanOldDatabase cleanDbOld = new CleanOldDatabase();
-        cleanDbOld.removeOldData();
+            CleanOldDatabase cleanDbOld = new CleanOldDatabase();
+            // Comment out to not remove the MySQL database for now
+            // cleanDbOld.removeOldData();
         }
     }
 }

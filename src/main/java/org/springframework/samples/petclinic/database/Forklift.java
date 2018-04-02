@@ -22,7 +22,10 @@ public class Forklift {
     public void forklift(){
 
         try{
-            setUpConnection();
+            SetupConnectionTwoDb setupConnectionTwoDb = SetupConnectionTwoDb.getSteupConnectionTwoDbInstance();
+            connMySQL = SetupConnectionTwoDb.connMySQL;
+            connPostgres = SetupConnectionTwoDb.connPostgres;
+            resultSet = SetupConnectionTwoDb.resultSet;
 
             // Migrate Scheme from MySQL to Postgres
             // This will read from schema
