@@ -2,15 +2,21 @@ package org.springframework.samples.petclinic.owner;
 
 import java.sql.Connection;
 import java.util.Date;
+import java.util.List;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.samples.petclinic.database.Database;
+import org.springframework.samples.petclinic.database.DatabaseThreadContext;
+import org.springframework.samples.petclinic.visit.Visit;
 
 /**
  * Database access code for datasource routing example.
@@ -20,6 +26,29 @@ public class VisitDao {
 
     public VisitDao(DataSource datasource) {
         this.jdbcTemplate = new JdbcTemplate(datasource);
+    }
+    
+    public List<Visit> findByPetId(int petId) {
+        String query = "SELECT * FROM Visits WHERE pet_id = ?";
+        
+    	PreparedStatementCreator psc = new PreparedStatementCreator() {
+    		public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+    	        PreparedStatement preparedStmt = con.prepareStatement(query);
+    	        preparedStmt.setInt(1, petId);
+				return preparedStmt;
+    		}
+    	};
+    	List<Visit> visitList = this.jdbcTemplate.query(psc, new RowMapper<Visit>() {
+	        public Visit mapRow(ResultSet rs, int rowNum) throws SQLException {
+	        	Visit v = new Visit();
+	            v.setId(rs.getInt(1));
+	            v.setPetId(rs.getInt(2));
+	            v.setDate(rs.getDate(3));
+	            v.setDescription(rs.getString(4));
+	            return v;
+	        }
+	    });
+    	return visitList;
     }
     
     public void update(int id, int petId, Date visitDate, String desc) {

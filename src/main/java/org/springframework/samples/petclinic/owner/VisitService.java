@@ -1,5 +1,7 @@
 package org.springframework.samples.petclinic.owner;
 
+import java.util.List;
+
 import org.springframework.samples.petclinic.database.Database;
 import org.springframework.samples.petclinic.database.DatabaseThreadContext;
 import org.springframework.samples.petclinic.visit.Visit;
@@ -14,6 +16,13 @@ public class VisitService {
 
     public VisitService(VisitDao visitDao) {
         this.visitDao = visitDao;
+    }
+    
+    public List<Visit> findByPetId(Database db, int petId) {
+        DatabaseThreadContext.setCurrentDatabase(db);
+        List<Visit> visits = this.visitDao.findByPetId(petId);
+        DatabaseThreadContext.clearCurrentDatabase();
+        return visits;
     }
     
     public void update(Database db, Visit visit) {
