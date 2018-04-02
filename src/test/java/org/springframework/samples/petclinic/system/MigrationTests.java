@@ -23,6 +23,7 @@ import org.springframework.samples.petclinic.vet.Vet;
 import org.springframework.samples.petclinic.vet.VetService;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,7 +81,6 @@ public class MigrationTests {
     }
     
     @Test
-    @Transactional
     public void testConsistency() throws Exception {
     	/// OWNER ///
     	//Checks if new and old database insert owner correctly
