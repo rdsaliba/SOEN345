@@ -16,30 +16,13 @@ public class ConsistencyCheckerUpdate {
     private  Connection connMySQL = null;
     private  Connection connPostgres = null;
     private  ResultSet resultSet = null;
-    private  Statement statementPostgres = null;
 
     public ConsistencyCheckerUpdate(){
         setUpConnection();
 
     }
 
-    private ResultSet getTableData(String tableName, Connection connection){
-
-        Collection<String> tables = null;
-        try{
-            Statement statement = connection.createStatement();
-            String query1 =
-                "SELECT * FROM " + tableName +";";
-            resultSet = statement.executeQuery(query1);
-        } catch (SQLException ce){
-            log.info("ClassNotFoundException exception");
-        }catch (Exception ce){
-            log.info("Unexpected Exception");
-        }
-
-        return resultSet;
-    }
-
+    // Setup Connection to postgres and mysql
     private void setUpConnection(){
         String databaseNameMySQL = "petclinic";
         String userNameMySQL = "root";
@@ -71,18 +54,29 @@ public class ConsistencyCheckerUpdate {
         }
     }
 
-    /* "MySQL or Postgres*/
-    public String[][] getInsertIntoValuesForConsistencyChecker(String tableName, String DB){
+    // Use connection type to get table data from either postgres or mysql
+    private ResultSet getTableData(String tableName, Connection connection){
+
+        Collection<String> tables = null;
+        try{
+            Statement statement = connection.createStatement();
+            String query1 =
+                "SELECT * FROM " + tableName +";";
+            resultSet = statement.executeQuery(query1);
+        } catch (SQLException ce){
+            log.info("ClassNotFoundException exception");
+        }catch (Exception ce){
+            log.info("Unexpected Exception");
+        }
+
+        return resultSet;
+    }
+
+    // Get MySQL table rows for table
+    public String[][] getInsertIntoValuesForConsistencyCheckerMySQL(String tableName){
         ResultSet temp = null;
 
-        if(DB.equals("MySQL")){
-
-            temp = getTableData(tableName, connMySQL);
-
-        }else if(DB.equals("Postgres"))
-        {
-            temp = getTableData(tableName, connPostgres);
-        }
+        temp = getTableData(tableName, connMySQL);
 
         String numValue="";
         String testing[][] = null;
@@ -115,11 +109,57 @@ public class ConsistencyCheckerUpdate {
             log.info("SQLException exception");
         }catch (Exception ce){
             log.info("Unexpected Exception");
-        }
+        } finally {
 
-        return  testing;
+            return testing;
+
+        }
     }
 
+    // Get Postgres table rows for table
+    public String[][] getInsertIntoValuesForConsistencyCheckerPostgres(String tableName){
+        ResultSet temp = null;
+
+        temp = getTableData(tableName, connPostgres);
+
+        String numValue="";
+        String testing[][] = null;
+
+        try{
+            ResultSetMetaData rsmd = getTableData(tableName, connPostgres).getMetaData();
+            int rowCount = 0;
+            while (temp.next())
+            {
+                ++rowCount;
+            }
+            int columnCount = rsmd.getColumnCount();
+            String columnName = rsmd.getColumnName(1);
+            testing = new String[rowCount][columnCount];
+            temp = getTableData(tableName, connPostgres);
+
+            int tempRow = 1;
+            for (int x = 1; x <= columnCount; ++x) {
+                while(temp.next())
+                {
+                    testing[tempRow-1][x-1] = "\'" + temp.getString(x) + "\'";
+                    tempRow++;
+                }
+                tempRow=1;
+                temp = getTableData(tableName, connPostgres);;
+            }
+
+
+        } catch (SQLException se){
+            log.info("SQLException exception");
+        }catch (Exception ce){
+            log.info("Unexpected Exception");
+        } finally {
+
+            return testing;
+        }
+    }
+
+    // Method to update owners in Postgres
     public void updateOwners(String id, String first_name, String last_name, String address, String city, String telephone){
 
         try{
@@ -134,6 +174,7 @@ public class ConsistencyCheckerUpdate {
         }
     }
 
+    // Method to update pets in Postgres
     public void updatePets(String id, String name, String birth_date, String type_id, String owner_id){
 
         try{
@@ -148,6 +189,7 @@ public class ConsistencyCheckerUpdate {
         }
     }
 
+    // Method to update specialties in Postgres
     public void updateSpecialities(String id, String name){
         try{
             Statement statement = connPostgres.createStatement();
@@ -161,6 +203,7 @@ public class ConsistencyCheckerUpdate {
         }
     }
 
+    // Method to update types in Postgres
     public void updateTypes(String id, String name){
         try{
             Statement statement = connPostgres.createStatement();
@@ -174,6 +217,7 @@ public class ConsistencyCheckerUpdate {
         }
     }
 
+    // Method to update vets in Postgres
     public void updateVets(String id, String first_name, String last_name){
         try{
             Statement statement = connPostgres.createStatement();
@@ -187,6 +231,7 @@ public class ConsistencyCheckerUpdate {
         }
     }
 
+    // Method to visit owners in Postgres
     public void updateVisit(String id, String pet_id, String visit_date, String description){
 
         try{
