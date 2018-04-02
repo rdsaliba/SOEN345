@@ -46,10 +46,6 @@ public class ConsistencyChecker {
 		{
 			totalRowChecked++;
 			for (int j=0; j<oldData[0].length;j++) {
-			    System.out.print(oldData[i][j] + ":");
-                System.out.print(oldData[i][j]);
-                System.out.println();
-
                 String data_old = HashData.getHashFromString(oldData[i][j]);
 				String data_new = HashData.getHashFromString(newData[i][j]);
 				if (!(data_old.equals(data_new))) {
