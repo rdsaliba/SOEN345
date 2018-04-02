@@ -31,25 +31,9 @@ public class Migration {
         try {
 	        String[] tables = {"owners", "types", "pets", "specialties", "vets", "visits"};
 	    	for(String eachTable: tables) {
-                System.out.println("The new data is: " + eachTable);
 
                 String newData [][] = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerPostgres(eachTable);
-
-                for(int i=0; i<newData.length; i++) {
-                    for(int j=0; j<newData[0].length; j++) {
-                        System.out.println(newData[i][j] + " ");
-                    }
-                }
-
-                System.out.println("The old data is: " + eachTable);
-
                 String oldData [][] = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerMySQL(eachTable);
-
-                for(int i=0; i<oldData.length; i++) {
-                    for (int j = 0; j < oldData[0].length; j++) {
-                        System.out.println(oldData[i][j] + " ");
-                    }
-                }
 
                 consistencyChecker = new ConsistencyChecker(oldData, newData);
                 count++;
@@ -66,10 +50,7 @@ public class Migration {
         }
         // Remove everything from old database
         if(totalThreshold/count > 0.99) {
-            System.out.println(totalThreshold/count);
-
             CleanOldDatabase cleanDbOld = new CleanOldDatabase();
-
             // Comment out to not remove the MySQL database for now
             // cleanDbOld.removeOldData();
         }

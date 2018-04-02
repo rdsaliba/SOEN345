@@ -18,40 +18,10 @@ public class ConsistencyCheckerUpdate {
     private  ResultSet resultSet = null;
 
     public ConsistencyCheckerUpdate(){
-        setUpConnection();
-
-    }
-
-    // Setup Connection to postgres and mysql
-    private void setUpConnection(){
-        String databaseNameMySQL = "petclinic";
-        String userNameMySQL = "root";
-        String passwordMySQL = "test";
-        String mySQLPort = "3306";
-
-        String databaseNamePostgres = "petclinic";
-        String userNamePostgres = "postgres";
-        String passwordPostgres = "test";
-        String postgresPort = "5432";
-
-        String hostUrl = "localhost";
-
-        try{
-
-            // Setup the connection with the MySQL DB
-            Class.forName("com.mysql.jdbc.Driver");
-            connMySQL = DriverManager.getConnection("jdbc:mysql://" + hostUrl
-                + ":" + mySQLPort + "/petclinic", userNameMySQL, passwordMySQL);
-
-            // Setup the connection with the MySQL DB
-            Class.forName("org.postgresql.Driver");
-            connPostgres = DriverManager.getConnection("jdbc:postgresql://" + hostUrl
-                + ":" + postgresPort + "/postgres?currentSchema=petclinic", userNamePostgres, passwordPostgres);
-        } catch (ClassNotFoundException ce){
-            log.info("ClassNotFoundException exception 1");
-        }catch (Exception ce){
-            log.info("Unexpected Exception 1");
-        }
+        SetupConnectionTwoDb setupConnectionTwoDb = SetupConnectionTwoDb.getSteupConnectionTwoDbInstance();
+        connMySQL = SetupConnectionTwoDb.connMySQL;
+        connPostgres = SetupConnectionTwoDb.connPostgres;
+        resultSet = SetupConnectionTwoDb.resultSet;
     }
 
     // Use connection type to get table data from either postgres or mysql
@@ -246,14 +216,14 @@ public class ConsistencyCheckerUpdate {
         }
     }
 
-    public void updateHashBackup(String tableName, String rowNumber, String hashBackup){
+    public void insertHashBackup(String tableName, String rowNumber, String hashBackup){
         try{
             Statement statement = connPostgres.createStatement();
             String query1 =
                 "INSERT INTO backup_hash VALUES (\'" + tableName + "\', " + rowNumber + ", \'" + hashBackup + "\');";
-            resultSet = statement.executeQuery(query1);
+            statement.executeUpdate(query1);
         } catch (SQLException ce){
-            log.info("ClassNotFoundException exception");
+            log.info("ClassNotFoundException exception" + ":" +  ce);
         }catch (Exception ce){
             log.info("Unexpected Exception");
         }

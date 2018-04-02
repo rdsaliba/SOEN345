@@ -82,7 +82,7 @@ public class ConsistencyChecker {
                 }
             }
             ConsistencyCheckerUpdate consistencyCheckerUpdate = new ConsistencyCheckerUpdate();
-            consistencyCheckerUpdate.updateHashBackup(Table, oldData[i][0], rowDataHash);
+            consistencyCheckerUpdate.insertHashBackup(Table, oldData[i][0], rowDataHash);
         }
     }
 

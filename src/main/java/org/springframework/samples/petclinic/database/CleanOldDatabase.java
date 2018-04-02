@@ -10,26 +10,10 @@ public class CleanOldDatabase {
 	private  Connection connMySQL = null;
 
 	public CleanOldDatabase(){
-        setUpConnection();
+        SetupConnectionTwoDb setupConnectionTwoDb = SetupConnectionTwoDb.getSteupConnectionTwoDbInstance();
+        connMySQL = SetupConnectionTwoDb.connMySQL;
 
     }
-
-	private void setUpConnection(){
-        String databaseNameMySQL = "petclinic";
-        String userNameMySQL = "root";
-        String passwordMySQL = "test";
-        String mySQLPort = "3306";
-
-        String hostUrl = "localhost";
-
-        try{
-
-            // Setup the connection with the MySQL DB
-            Class.forName("com.mysql.jdbc.Driver");
-            connMySQL = DriverManager.getConnection("jdbc:mysql://" + hostUrl
-                + ":" + mySQLPort + "/petclinic", userNameMySQL, passwordMySQL);
-        }catch (Exception ce) {}
-	}
 
 	public void removeOldData() {
 		try{

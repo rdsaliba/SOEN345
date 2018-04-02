@@ -22,7 +22,10 @@ public class Forklift {
     public void forklift(){
 
         try{
-            setUpConnection();
+            SetupConnectionTwoDb setupConnectionTwoDb = SetupConnectionTwoDb.getSteupConnectionTwoDbInstance();
+            connMySQL = SetupConnectionTwoDb.connMySQL;
+            connPostgres = SetupConnectionTwoDb.connPostgres;
+            resultSet = SetupConnectionTwoDb.resultSet;
 
             // Migrate Scheme from MySQL to Postgres
             // This will read from schema
@@ -102,38 +105,6 @@ public class Forklift {
 
         return resultSet;
     }
-
-    private void setUpConnection(){
-        String databaseNameMySQL = "petclinic";
-        String userNameMySQL = "root";
-        String passwordMySQL = "test";
-        String mySQLPort = "3306";
-
-        String databaseNamePostgres = "petclinic";
-        String userNamePostgres = "postgres";
-        String passwordPostgres = "test";
-        String postgresPort = "5432";
-
-        String hostUrl = "localhost";
-
-        try{
-
-            // Setup the connection with the MySQL DB
-            Class.forName("com.mysql.jdbc.Driver");
-            connMySQL = DriverManager.getConnection("jdbc:mysql://" + hostUrl
-                + ":" + mySQLPort + "/petclinic", userNameMySQL, passwordMySQL);
-
-            // Setup the connection with the MySQL DB
-            Class.forName("org.postgresql.Driver");
-            connPostgres = DriverManager.getConnection("jdbc:postgresql://" + hostUrl
-                + ":" + postgresPort + "/postgres?currentSchema=petclinic", userNamePostgres, passwordPostgres);
-        } catch (ClassNotFoundException ce){
-            log.info("ClassNotFoundException exception 1");
-        }catch (Exception ce){
-            log.info("Unexpected Exception 1");
-        }
-    }
-
     private String getInsertIntoValues(String tableName){
         ResultSet temp = getTableData(tableName, connMySQL);
         String numValue="";
