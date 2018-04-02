@@ -42,14 +42,14 @@ public class ConsistencyChecker {
             newData = tempArray;
         }
 
-		for (int i=0; i<oldData.length;i++)
-		{
+		for (int i=0; i<oldData.length;i++) {
 			totalRowChecked++;
 			for (int j=0; j<oldData[0].length;j++) {
                 String data_old = HashData.getHashFromString(oldData[i][j]);
 				String data_new = HashData.getHashFromString(newData[i][j]);
 				if (!(data_old.equals(data_new))) {
-					System.out.println("Failed Migration");
+                    errorOccurance++;
+                    System.out.println("Failed Migration");
 					System.out.println(data_old + " not same as " + data_new);
 
 					ConsistencyCheckerUpdate ccu = new ConsistencyCheckerUpdate();
@@ -73,7 +73,7 @@ public class ConsistencyChecker {
 						ccu.updateVisit(oldData[i][0], oldData[i][1], oldData[i][2], oldData[i][3]);
 						break;
 					}
-					errorOccurance++;
+					break;
 				}
 			}
 		}
