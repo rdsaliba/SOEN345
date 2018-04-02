@@ -72,11 +72,17 @@ public class ConsistencyChecker {
         for (int i=0; i<oldData.length;i++)
         {
             totalRowChecked++;
+            String rowDataHash ="";
             for (int j=0; j<oldData[0].length;j++) {
                 String data_old = HashData.getHashFromString(oldData[i][j]);
-                ConsistencyCheckerUpdate consistencyCheckerUpdate = new ConsistencyCheckerUpdate();
-                consistencyCheckerUpdate.updateHashBackup(Table, oldData[i][0], data_old);
+                if(j<oldData[0].length-1){
+                    rowDataHash += data_old +",";
+                }else{
+                    rowDataHash += data_old;
+                }
             }
+            ConsistencyCheckerUpdate consistencyCheckerUpdate = new ConsistencyCheckerUpdate();
+            consistencyCheckerUpdate.updateHashBackup(Table, oldData[i][0], rowDataHash);
         }
     }
 

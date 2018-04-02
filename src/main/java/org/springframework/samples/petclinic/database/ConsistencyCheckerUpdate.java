@@ -250,7 +250,7 @@ public class ConsistencyCheckerUpdate {
         try{
             Statement statement = connPostgres.createStatement();
             String query1 =
-                "INSERT INTO backup_hash VALUE (" + tableName + ", " + rowNumber + ", " + hashBackup + ");";
+                "INSERT INTO backup_hash VALUES (\'" + tableName + "\', " + rowNumber + ", \'" + hashBackup + "\');";
             resultSet = statement.executeQuery(query1);
         } catch (SQLException ce){
             log.info("ClassNotFoundException exception");
