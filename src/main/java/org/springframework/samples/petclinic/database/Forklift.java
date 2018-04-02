@@ -86,11 +86,11 @@ public class Forklift {
        return tables;
     }
 */
-    private ResultSet getTableData(String tableName){
+    private ResultSet getTableData(String tableName, Connection connection){
 
         Collection<String> tables = null;
         try{
-            Statement statement = connMySQL.createStatement();
+            Statement statement = connection.createStatement();
             String query1 =
                 "SELECT * FROM " + tableName +";";
             resultSet = statement.executeQuery(query1);
@@ -135,7 +135,7 @@ public class Forklift {
     }
 
     private String getInsertIntoValues(String tableName){
-        ResultSet temp = getTableData(tableName);
+        ResultSet temp = getTableData(tableName, connMySQL);
         String numValue="";
 
         try{
