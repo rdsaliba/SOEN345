@@ -96,13 +96,12 @@ class OwnerController {
         }
 
         // find owners by last name
-        Collection<Owner> results = this.owners.findByLastName(owner.getLastName());
-
-        //Test database changes
-        String ownerName = ownerService.getOwnerName(Database.PRIMARY);
-        System.out.println(ownerName);
-        ownerName = ownerService.getOwnerName(Database.SECONDARY);
-        System.out.println(ownerName);
+        Collection<Owner> results = ownerService.findByLastName(Database.PRIMARY, owner.getLastName());
+        // Shadow read
+        Collection<Owner> results2 = ownerService.findByLastName(Database.SECONDARY, owner.getLastName());
+        
+        System.out.println(results);
+        System.out.println(results2);
         
         if (results.isEmpty()) {
             // no owners found
@@ -121,7 +120,14 @@ class OwnerController {
 
     @GetMapping("/owners/{ownerId}/edit")
     public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
-        Owner owner = this.owners.findById(ownerId);
+        // find owners by last name
+        Owner owner = ownerService.findById(Database.PRIMARY, ownerId);
+        // Shadow read
+        Owner owner2 = ownerService.findById(Database.SECONDARY, ownerId);
+        
+        System.out.println(owner);
+        System.out.println(owner2);
+    
         model.addAttribute(owner);
         return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
     }

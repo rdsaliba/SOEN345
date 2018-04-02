@@ -2,7 +2,10 @@ package org.springframework.samples.petclinic.owner;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -32,6 +35,50 @@ public class OwnerDao {
     private static RowMapper<String> rowMapper = (rs, rowNum) -> {
         return rs.getString("first_name");
     };
+    
+    public Collection<Owner> findByLastName(String lastName) {
+        String query = "SELECT DISTINCT * FROM Owners owner left join pets ON owner.id = owner_id WHERE last_name LIKE ?";
+        
+    	PreparedStatementCreator psc = new PreparedStatementCreator() {
+    		public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+    	        PreparedStatement preparedStmt = con.prepareStatement(query);
+    	        preparedStmt.setString(1, lastName + "%");
+				return preparedStmt;
+    		}
+    	};
+    	List<Owner> ownerList = this.jdbcTemplate.query(psc, new RowMapper<Owner>() {
+	        public Owner mapRow(ResultSet rs, int rowNum) throws SQLException {
+	        	Owner o = new Owner();
+	            o.setId(rs.getInt(1));
+	            o.setFirstName(rs.getString(2));
+	            o.setLastName(rs.getString(3));
+	            o.setAddress(rs.getString(4));
+	            o.setCity(rs.getString(5));
+	            o.setTelephone(rs.getString(6));
+	            return o;
+	        }
+	    });
+    	return ownerList;
+    }
+    
+    public Owner findById(int id) {
+        String query = "SELECT * FROM Owners owner left join pets ON owner.id = owner_id WHERE owner.id = ?";
+    	
+    	Owner owner = this.jdbcTemplate.queryForObject(query, new Object[] { id }, new RowMapper<Owner>() {
+	    	public Owner mapRow(ResultSet rs, int rowNum) throws SQLException {
+	        	Owner o = new Owner();
+	            o.setId(rs.getInt(1));
+	            o.setFirstName(rs.getString(2));
+	            o.setLastName(rs.getString(3));
+	            o.setAddress(rs.getString(4));
+	            o.setCity(rs.getString(5));
+	            o.setTelephone(rs.getString(6));
+	            return o;
+	        }
+    	});
+    	
+    	return owner; 
+    }
     
     public void update(int id, String firstName, String lastName, String address, String city, String telephone) {
         String query = "UPDATE owners SET first_name = ?, last_name = ?, address = ?, city = ?, telephone = ? WHERE id = ?";

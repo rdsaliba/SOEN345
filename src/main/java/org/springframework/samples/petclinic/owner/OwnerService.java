@@ -1,5 +1,7 @@
 package org.springframework.samples.petclinic.owner;
 
+import java.util.Collection;
+
 import org.springframework.samples.petclinic.database.Database;
 import org.springframework.samples.petclinic.database.DatabaseThreadContext;
 
@@ -20,6 +22,20 @@ public class OwnerService {
         String ownerName = this.ownerDao.getOwnerName();
         DatabaseThreadContext.clearCurrentDatabase();
         return ownerName;
+    }
+    
+    public Collection<Owner> findByLastName(Database db, String lastName) {
+        DatabaseThreadContext.setCurrentDatabase(db);
+        Collection<Owner> owners = this.ownerDao.findByLastName(lastName);
+        DatabaseThreadContext.clearCurrentDatabase();
+        return owners;
+    }
+    
+    public Owner findById(Database db, int id) {
+        DatabaseThreadContext.setCurrentDatabase(db);
+        Owner owner = this.ownerDao.findById(id);
+        DatabaseThreadContext.clearCurrentDatabase();
+        return owner;
     }
     
     public void update(Database db, Owner owner) {
