@@ -12,10 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.samples.petclinic.database.ConsistencyChecker;
-import org.springframework.samples.petclinic.database.ConsistencyCheckerUpdate;
 import org.springframework.samples.petclinic.database.Database;
 import org.springframework.samples.petclinic.owner.Owner;
-import org.springframework.samples.petclinic.owner.OwnerRepository;
 import org.springframework.samples.petclinic.owner.OwnerService;
 import org.springframework.samples.petclinic.owner.Pet;
 import org.springframework.samples.petclinic.owner.PetService;
@@ -52,11 +50,9 @@ public class MigrationTests {
     private Pet pet;
     private Visit visit;
     private ConsistencyChecker cc;
-    private ConsistencyCheckerUpdate consistencyCheckerUpdate;
     
     @Before
     public void setup() {
-    	consistencyCheckerUpdate = new ConsistencyCheckerUpdate(); 
     	owner = new Owner();
     	owner.setId(TEST_OWNER_ID);
     	owner.setFirstName("test");
@@ -87,13 +83,16 @@ public class MigrationTests {
     @Transactional
     public void testConsistency() throws Exception {
     	/// OWNER ///
-        String[][] newData = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerPostgres("Owners");
-        String[][] oldData = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerMySQL("Owners");
-    	cc= new ConsistencyChecker(oldData, newData);
-    	
     	//Checks if new and old database insert owner correctly
     	int id = ownerService.saveNew(Database.PRIMARY, owner);
     	int id2 = ownerService.saveNew(Database.SECONDARY, owner);
+    	cc = new ConsistencyChecker("Owners");
+    	assertEquals(0, cc.checkConsistency("Owners"));
+    	
+    	//Checks if inconsistent writes are fixed for owner
+    	ownerService.saveNew(Database.PRIMARY, owner);
+    	cc = new ConsistencyChecker("Owners");
+    	assertEquals(1, cc.checkConsistency("Owners"));
     	assertEquals(0, cc.checkConsistency("Owners"));
     	
     	//Checks if new and old database update owner correctly
@@ -101,6 +100,7 @@ public class MigrationTests {
     	owner.setAddress("new address");
     	ownerService.update(Database.PRIMARY, owner);
     	ownerService.update(Database.SECONDARY, owner);
+    	cc = new ConsistencyChecker("Owners");
     	assertEquals(0, cc.checkConsistency("Owners"));
     	
     	//Checks if reads are consistent in owner
@@ -110,22 +110,26 @@ public class MigrationTests {
     	Collection<Owner> o3 = ownerService.findByLastName(Database.PRIMARY, "test");
     	Collection<Owner> o4 = ownerService.findByLastName(Database.PRIMARY, "test");
     	assertEquals(o3, o4);
- 
     	
     	/// PETS ///
-        newData = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerPostgres("Pets");
-        oldData = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerMySQL("Pets");
-    	cc= new ConsistencyChecker(oldData, newData);
     	//Checks if new and old database insert pet correctly
     	id = petService.saveNew(Database.PRIMARY, pet);
     	id2 = petService.saveNew(Database.SECONDARY, pet);
+    	cc = new ConsistencyChecker("Pets");
     	assertEquals(0, cc.checkConsistency("Owners"));
+    	
+    	//Checks if inconsistent writes are fixed for pet
+    	petService.saveNew(Database.PRIMARY, pet);
+    	cc = new ConsistencyChecker("Pets");
+    	assertEquals(1, cc.checkConsistency("Pets"));
+    	assertEquals(0, cc.checkConsistency("Pets"));
     	
     	//Checks if new and old database update pet correctly
     	pet.setId(id);
     	pet.setName("new name");
     	petService.update(Database.PRIMARY, pet);
     	petService.update(Database.SECONDARY, pet);
+    	cc = new ConsistencyChecker("Pets");
     	assertEquals(0, cc.checkConsistency("Pets"));
     	
     	//Checks if reads are consistent in pets
@@ -136,14 +140,17 @@ public class MigrationTests {
     	Collection<PetType> p4 = petService.findPetTypes(Database.SECONDARY);
     	assertEquals(p3, p4);
     	
-    	
     	/// VISITS ///
-        newData = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerPostgres("Visits");
-        oldData = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerMySQL("Visits");
-    	cc= new ConsistencyChecker(oldData, newData);
     	//Checks if new and old database insert visit correctly
     	id = visitService.saveNew(Database.PRIMARY, visit);
     	id2 = visitService.saveNew(Database.SECONDARY, visit);
+    	cc = new ConsistencyChecker("Visits");
+    	assertEquals(0, cc.checkConsistency("Visits"));
+    	
+    	//Checks if inconsistent writes are fixed for visit
+    	visitService.saveNew(Database.PRIMARY, visit);
+    	cc = new ConsistencyChecker("Visits");
+    	assertEquals(1, cc.checkConsistency("Visits"));
     	assertEquals(0, cc.checkConsistency("Visits"));
     	
     	//Checks if new and old database update visit correctly
@@ -151,6 +158,7 @@ public class MigrationTests {
     	visit.setDescription("new description");
     	visitService.update(Database.PRIMARY, visit);
     	visitService.update(Database.SECONDARY, visit);
+    	cc = new ConsistencyChecker("Visits");
     	assertEquals(0, cc.checkConsistency("Visits"));
     	
     	//Checks if reads are consistent in visit

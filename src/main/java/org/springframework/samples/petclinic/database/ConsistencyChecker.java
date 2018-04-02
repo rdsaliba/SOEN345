@@ -14,6 +14,13 @@ public class ConsistencyChecker {
 	private int totalRowChecked;
 	private double thresholdLevel;
 
+	public ConsistencyChecker(String type) {
+		ConsistencyCheckerUpdate consistencyCheckerUpdate = new ConsistencyCheckerUpdate();
+        this.newData = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerPostgres(type);
+        this.oldData = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerMySQL(type);
+
+	}
+	
 	public ConsistencyChecker(String oldData [][], String newData [][]) {
 		this.oldData=oldData;
 		this.newData=newData;
