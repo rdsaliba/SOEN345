@@ -26,21 +26,24 @@ public class Migration {
         }
         */
         try {
-	        String[] tables = {"owners", "types", "pets", "specialties", "vets", "visits", "vet_specialties"};
+	        String[] tables = {"owners", "types", "pets", "specialties", "vets", "visits"};
 	    	for(String eachTable: tables) {
-	    		   	String newData [][] = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerPostgres(eachTable);
-	    	        String oldData [][] = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerMySQL(eachTable);
-	    	        ConsistencyChecker consistencyChecker = new ConsistencyChecker(oldData, newData);
-	    	        try{
-	    	            consistencyChecker.checkConsistency(eachTable);
-	    	        }catch (Exception e){
+                System.out.println("The new data is: " + eachTable);
 
-	    	        }
+                String newData [][] = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerPostgres(eachTable);
+                String oldData [][] = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerMySQL(eachTable);
+
+                ConsistencyChecker consistencyChecker = new ConsistencyChecker(oldData, newData);
+                try{
+                    consistencyChecker.checkConsistency(eachTable);
+                }catch (Exception e){
+
+                }
 	    	}
         }catch(Exception e){
 
         }
-    	
-     
+
+
     }
 }

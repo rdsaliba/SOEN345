@@ -92,7 +92,7 @@ public class Forklift {
         try{
             Statement statement = connection.createStatement();
             String query1 =
-                "SELECT * FROM " + tableName +";";
+                "SELECT * FROM " + tableName +" ORDER BY id ASC;";
             resultSet = statement.executeQuery(query1);
         } catch (SQLException ce){
             log.info("ClassNotFoundException exception");
