@@ -1,26 +1,22 @@
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+package org.springframework.samples.petclinic.database;
 
-import javax.swing.plaf.synth.SynthSeparatorUI;
 
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
+import org.springframework.samples.petclinic.database.HashData;
+import org.springframework.samples.petclinic.database.HashGenerationException;
 
-import java.security.*;
 public class ConsistencyChecker {
-	
+
     //private static Logger log = LoggerFactory.getLogger(ConsistencyChecker.class);
 	private String oldData [][];
 	private String newData [][];
-	
+
 	public ConsistencyChecker(String oldData [][],String newData [][]) {
 		this.oldData=oldData;
 		this.newData=newData;
 	}
-	
+
 	public void checkConsistency() throws HashGenerationException {
-		
+
 		for (int i=0; i<oldData.length;i++)
 		{
 			for (int j=0; j<oldData[0].length;j++) {
@@ -36,6 +32,6 @@ public class ConsistencyChecker {
 		}
 		System.out.println("CHECK COMPLETE");
 	}
-	
+
 	public void updateData() {}
 }
