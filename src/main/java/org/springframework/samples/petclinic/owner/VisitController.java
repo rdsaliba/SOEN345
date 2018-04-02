@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.owner;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.database.Database;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.samples.petclinic.visit.VisitRepository;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.sql.DataSource;
 import javax.validation.Valid;
 import java.util.Map;
 
@@ -45,6 +47,12 @@ class VisitController {
         this.visits = visits;
         this.pets = pets;
     }
+    
+    @Autowired
+    DataSource routingDatasource;
+
+    @Autowired
+    VisitService visitService;
 
     @InitBinder
     public void setAllowedFields(WebDataBinder dataBinder) {
@@ -82,7 +90,10 @@ class VisitController {
         if (result.hasErrors()) {
             return "pets/createOrUpdateVisitForm";
         } else {
-            this.visits.save(visit);
+            //Regular write
+            visitService.saveNew(Database.PRIMARY, visit);
+            //Shadow write
+            visitService.saveNew(Database.SECONDARY, visit);
             return "redirect:/owners/{ownerId}";
         }
     }
