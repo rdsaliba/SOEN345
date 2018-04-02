@@ -21,7 +21,9 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.database.ConsistencyChecker;
 import org.springframework.samples.petclinic.database.Database;
+import org.springframework.samples.petclinic.database.HashGenerationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
@@ -91,7 +93,7 @@ class PetController {
     }
 
     @PostMapping("/pets/new")
-    public String processCreationForm(Owner owner, @Valid Pet pet, BindingResult result, ModelMap model) {
+    public String processCreationForm(Owner owner, @Valid Pet pet, BindingResult result, ModelMap model) throws HashGenerationException {
         if (StringUtils.hasLength(pet.getName()) && pet.isNew() && owner.getPet(pet.getName(), true) != null){
             result.rejectValue("name", "duplicate", "already exists");
         }
@@ -104,6 +106,8 @@ class PetController {
             petService.saveNew(Database.PRIMARY, pet);
             //Shadow write
             petService.saveNew(Database.SECONDARY, pet);
+            ConsistencyChecker cc = new ConsistencyChecker("Pets");
+            cc.checkConsistency("Pets");
             return "redirect:/owners/{ownerId}";
         }
     }
@@ -123,7 +127,7 @@ class PetController {
     }
 
     @PostMapping("/pets/{petId}/edit")
-    public String processUpdateForm(@Valid Pet pet, BindingResult result, Owner owner, ModelMap model) {
+    public String processUpdateForm(@Valid Pet pet, BindingResult result, Owner owner, ModelMap model) throws HashGenerationException {
         if (result.hasErrors()) {
             pet.setOwner(owner);
             model.put("pet", pet);
@@ -134,7 +138,8 @@ class PetController {
             petService.update(Database.PRIMARY, pet);
             //Shadow write
             petService.update(Database.SECONDARY, pet);
-            
+            ConsistencyChecker cc = new ConsistencyChecker("Pets");
+            cc.checkConsistency("Pets");
             return "redirect:/owners/{ownerId}";
         }
     }

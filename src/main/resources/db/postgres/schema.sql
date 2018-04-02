@@ -64,3 +64,9 @@ CREATE TABLE IF NOT EXISTS visits (
   description VARCHAR(255),
   FOREIGN KEY (pet_id) REFERENCES pets(id)
 );
+
+CREATE TABLE IF NOT EXISTS backup_hash (
+  table_name VARCHAR(255),
+  row_number Integer NOT NULL,
+  hash VARCHAR(255)
+);

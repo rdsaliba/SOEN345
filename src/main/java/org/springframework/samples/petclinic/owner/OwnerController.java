@@ -22,7 +22,9 @@ import javax.sql.DataSource;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.database.ConsistencyChecker;
 import org.springframework.samples.petclinic.database.Database;
+import org.springframework.samples.petclinic.database.HashGenerationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -67,7 +69,7 @@ class OwnerController {
     }
 
     @PostMapping("/owners/new")
-    public String processCreationForm(@Valid Owner owner, BindingResult result) {
+    public String processCreationForm(@Valid Owner owner, BindingResult result) throws HashGenerationException {
         if (result.hasErrors()) {
             return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
         } else {
@@ -75,7 +77,8 @@ class OwnerController {
             int id = ownerService.saveNew(Database.PRIMARY, owner);
             //Shadow write
             ownerService.saveNew(Database.SECONDARY, owner);
-            
+            ConsistencyChecker cc = new ConsistencyChecker("Owners");
+            cc.checkConsistency("Owners");
             owner.setId(id);
             return "redirect:/owners/" + owner.getId();
         }
@@ -135,7 +138,7 @@ class OwnerController {
     }
 
     @PostMapping("/owners/{ownerId}/edit")
-    public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result, @PathVariable("ownerId") int ownerId) {
+    public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result, @PathVariable("ownerId") int ownerId) throws HashGenerationException {
         if (result.hasErrors()) {
             return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
         } else {
@@ -144,7 +147,8 @@ class OwnerController {
             ownerService.update(Database.PRIMARY, owner);
             //Shadow write
             ownerService.update(Database.SECONDARY, owner);
-            
+            ConsistencyChecker cc = new ConsistencyChecker("Owners");
+            cc.checkConsistency("Owners");
             return "redirect:/owners/{ownerId}";
         }
     }

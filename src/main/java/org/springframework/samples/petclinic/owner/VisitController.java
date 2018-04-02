@@ -16,7 +16,9 @@
 package org.springframework.samples.petclinic.owner;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.database.ConsistencyChecker;
 import org.springframework.samples.petclinic.database.Database;
+import org.springframework.samples.petclinic.database.HashGenerationException;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.samples.petclinic.visit.VisitRepository;
 import org.springframework.stereotype.Controller;
@@ -83,7 +85,7 @@ class VisitController {
 
     // Spring MVC calls method loadPetWithVisit(...) before processNewVisitForm is called
     @PostMapping("/owners/{ownerId}/pets/{petId}/visits/new")
-    public String processNewVisitForm(@Valid Visit visit, BindingResult result) {
+    public String processNewVisitForm(@Valid Visit visit, BindingResult result) throws HashGenerationException {
         if (result.hasErrors()) {
             return "pets/createOrUpdateVisitForm";
         } else {
@@ -91,6 +93,8 @@ class VisitController {
             visitService.saveNew(Database.PRIMARY, visit);
             //Shadow write
             visitService.saveNew(Database.SECONDARY, visit);
+            ConsistencyChecker cc = new ConsistencyChecker("Visits");
+            cc.checkConsistency("Visits");
             return "redirect:/owners/{ownerId}";
         }
     }

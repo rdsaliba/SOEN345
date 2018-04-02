@@ -76,4 +76,30 @@ public class Vet extends Person {
         getSpecialtiesInternal().add(specialty);
     }
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((specialties == null) ? 0 : specialties.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Vet other = (Vet) obj;
+		if (specialties == null) {
+			if (other.specialties != null)
+				return false;
+		} else if (!specialties.equals(other.specialties))
+			return false;
+		return true;
+	}
+    
+
 }
