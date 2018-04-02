@@ -15,16 +15,24 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import java.util.Collection;
+
+import javax.sql.DataSource;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.database.Database;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.Collection;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @author Juergen Hoeller
@@ -45,6 +53,12 @@ class PetController {
         this.owners = owners;
     }
 
+    @Autowired
+    DataSource routingDatasource;
+
+    @Autowired
+    PetService petService;
+    
     @ModelAttribute("types")
     public Collection<PetType> populatePetTypes() {
         return this.pets.findPetTypes();
@@ -83,7 +97,10 @@ class PetController {
             model.put("pet", pet);
             return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
         } else {
-            this.pets.save(pet);
+            //Regular write
+            petService.saveNew(Database.PRIMARY, pet);
+            //Shadow write
+            petService.saveNew(Database.SECONDARY, pet);
             return "redirect:/owners/{ownerId}";
         }
     }
@@ -103,7 +120,11 @@ class PetController {
             return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
         } else {
             owner.addPet(pet);
-            this.pets.save(pet);
+            //Regular write
+            petService.update(Database.PRIMARY, pet);
+            //Shadow write
+            petService.update(Database.SECONDARY, pet);
+            
             return "redirect:/owners/{ownerId}";
         }
     }
