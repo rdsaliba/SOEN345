@@ -147,7 +147,6 @@ public class Forklift {
             }
             temp.beforeFirst();
             int columnCount = rsmd.getColumnCount();
-            String columnName = rsmd.getColumnName(1);
 
             String testing[][] = new String[rowCount][columnCount];
 
@@ -155,11 +154,6 @@ public class Forklift {
             for (int x = 1; x <= columnCount; ++x) {
                 while(temp.next())
                 {
-                    if(x==1 && columnName.equals("id")) {
-                        testing[tempRow-1][x-1] = "DEFAULT";
-                        tempRow++;
-                        continue;
-                    }
                     testing[tempRow-1][x-1] = "\'" + temp.getString(x) + "\'";
                     tempRow++;
                 }
