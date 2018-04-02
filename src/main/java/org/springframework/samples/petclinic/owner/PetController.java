@@ -16,8 +16,8 @@
 package org.springframework.samples.petclinic.owner;
 
 import java.util.Collection;
+import java.util.List;
 
-import javax.sql.DataSource;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +58,12 @@ class PetController {
     
     @ModelAttribute("types")
     public Collection<PetType> populatePetTypes() {
+        // find owners by last name
+        List<PetType> petTypes = petService.findPetTypes(Database.PRIMARY);
+        // Shadow read
+        List<PetType> petTypes2 = petService.findPetTypes(Database.SECONDARY);
+        System.out.println(petTypes);
+        System.out.println(petTypes2);
         return this.pets.findPetTypes();
     }
 
@@ -104,6 +110,13 @@ class PetController {
 
     @GetMapping("/pets/{petId}/edit")
     public String initUpdateForm(@PathVariable("petId") int petId, ModelMap model) {
+        // find owners by last name
+        Pet pet1 = petService.findById(Database.PRIMARY, petId);
+        // Shadow read
+        Pet pet2 = petService.findById(Database.SECONDARY, petId);
+        System.out.println(pet1);
+        System.out.println(pet2);
+        
         Pet pet = this.pets.findById(petId);
         model.put("pet", pet);
         return VIEWS_PETS_CREATE_OR_UPDATE_FORM;

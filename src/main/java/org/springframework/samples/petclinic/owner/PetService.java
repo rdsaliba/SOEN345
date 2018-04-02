@@ -1,5 +1,8 @@
 package org.springframework.samples.petclinic.owner;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.springframework.samples.petclinic.database.Database;
 import org.springframework.samples.petclinic.database.DatabaseThreadContext;
 
@@ -13,6 +16,20 @@ public class PetService {
 
     public PetService(PetDao petDao) {
         this.petDao = petDao;
+    }
+    
+    public List<PetType>findPetTypes(Database db) {
+        DatabaseThreadContext.setCurrentDatabase(db);
+        List<PetType> petTypes = this.petDao.findPetTypes();
+        DatabaseThreadContext.clearCurrentDatabase();
+        return petTypes;
+    }
+    
+    public Pet findById(Database db, int id) {
+        DatabaseThreadContext.setCurrentDatabase(db);
+        Pet pet = this.petDao.findById(id);
+        DatabaseThreadContext.clearCurrentDatabase();
+        return pet;
     }
     
     public void update(Database db, Pet pet) {

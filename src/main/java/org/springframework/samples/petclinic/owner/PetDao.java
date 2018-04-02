@@ -1,14 +1,18 @@
 package org.springframework.samples.petclinic.owner;
 
 import java.sql.Connection;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
@@ -20,6 +24,39 @@ public class PetDao {
 
     public PetDao(DataSource datasource) {
         this.jdbcTemplate = new JdbcTemplate(datasource);
+    }
+    
+    public List<PetType> findPetTypes() {
+        String query = "SELECT * FROM Types ORDER BY name";
+        
+    	List<PetType> petTypeList = this.jdbcTemplate.query(query, new RowMapper<PetType>() {
+	    	public PetType mapRow(ResultSet rs, int rowNum) throws SQLException {
+	    		PetType p = new PetType();
+	            p.setId(rs.getInt(1));
+	            p.setName(rs.getString(2));
+	            return p;
+	        }
+	    });
+    	return petTypeList;
+    }
+    
+    public Pet findById(int id) {
+        String query = "SELECT * FROM Pets pet left join Types ON pet.type_id = Types.id WHERE pet.id = ?";
+    	
+    	Pet pet = this.jdbcTemplate.queryForObject(query, new Object[] { id }, new RowMapper<Pet>() {
+	    	public Pet mapRow(ResultSet rs, int rowNum) throws SQLException {
+	    		Pet p = new Pet();
+	            p.setId(rs.getInt(1));
+	            p.setName(rs.getString(2));
+	            p.setBirthDate(rs.getDate(3));
+	            PetType type = new PetType();
+	            type.setName(rs.getString(7));
+	            p.setType(type);
+	            return p;
+	        }
+    	});
+    	
+    	return pet; 
     }
     
     public void update(int id, String name, Date birthDate, int type, int owner) {
