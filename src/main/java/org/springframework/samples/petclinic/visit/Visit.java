@@ -80,4 +80,40 @@ public class Visit extends BaseEntity {
         this.petId = petId;
     }
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((petId == null) ? 0 : petId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Visit other = (Visit) obj;
+		if (date == null) {
+			if (other.date != null)
+				return false;
+		} else if (!date.equals(other.date))
+			return false;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		if (petId == null) {
+			if (other.petId != null)
+				return false;
+		} else if (!petId.equals(other.petId))
+			return false;
+		return true;
+	}
 }
