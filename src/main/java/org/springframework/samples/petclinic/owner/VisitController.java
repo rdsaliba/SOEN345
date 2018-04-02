@@ -47,9 +47,6 @@ class VisitController {
         this.visits = visits;
         this.pets = pets;
     }
-    
-    @Autowired
-    DataSource routingDatasource;
 
     @Autowired
     VisitService visitService;

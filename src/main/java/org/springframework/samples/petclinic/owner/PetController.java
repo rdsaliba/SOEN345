@@ -54,9 +54,6 @@ class PetController {
     }
 
     @Autowired
-    DataSource routingDatasource;
-
-    @Autowired
     PetService petService;
     
     @ModelAttribute("types")

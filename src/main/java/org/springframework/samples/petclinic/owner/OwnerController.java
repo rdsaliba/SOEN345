@@ -52,9 +52,6 @@ class OwnerController {
     }
 
     @Autowired
-    DataSource routingDatasource;
-
-    @Autowired
     OwnerService ownerService;
     
     @InitBinder
