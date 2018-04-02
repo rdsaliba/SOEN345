@@ -18,6 +18,8 @@ import org.springframework.samples.petclinic.owner.PetDao;
 import org.springframework.samples.petclinic.owner.PetService;
 import org.springframework.samples.petclinic.owner.VisitDao;
 import org.springframework.samples.petclinic.owner.VisitService;
+import org.springframework.samples.petclinic.vet.VetDao;
+import org.springframework.samples.petclinic.vet.VetService;
 
 @Configuration
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
@@ -61,6 +63,11 @@ public class DatabaseRouter {
     @Bean
     public VisitService visitService() {
         return new VisitService(new VisitDao(dataSource()));
+    }
+    
+    @Bean
+    public VetService vetService() {
+        return new VetService(new VetDao(dataSource()));
     }
     
 }
