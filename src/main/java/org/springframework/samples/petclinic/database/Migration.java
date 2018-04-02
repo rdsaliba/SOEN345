@@ -25,6 +25,9 @@ public class Migration {
             }
         }
         */
+        int count = 0;
+        double totalThreshold = 0;
+        ConsistencyChecker consistencyChecker;
         try {
 	        String[] tables = {"owners", "types", "pets", "specialties", "vets", "visits"};
 	    	for(String eachTable: tables) {
@@ -33,17 +36,24 @@ public class Migration {
                 String newData [][] = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerPostgres(eachTable);
                 String oldData [][] = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerMySQL(eachTable);
 
-                ConsistencyChecker consistencyChecker = new ConsistencyChecker(oldData, newData);
+                consistencyChecker = new ConsistencyChecker(oldData, newData);
+                count++;
                 try{
                     consistencyChecker.checkConsistency(eachTable);
+                    totalThreshold += consistencyChecker.getThresholdLevel();
                 }catch (Exception e){
 
                 }
+                
 	    	}
         }catch(Exception e){
 
         }
-
-
+        System.out.println(totalThreshold/count);
+        // Remove everything from old database
+        if(totalThreshold/count > 0.99) {
+        CleanOldDatabase cleanDbOld = new CleanOldDatabase();
+        cleanDbOld.removeOldData();
+        }
     }
 }

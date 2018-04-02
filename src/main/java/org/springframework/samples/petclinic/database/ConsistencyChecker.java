@@ -12,6 +12,7 @@ public class ConsistencyChecker {
 	private String newData [][];
 	private int	errorOccurance;
 	private int totalRowChecked;
+	private double thresholdLevel;
 
 	public ConsistencyChecker(String oldData [][],String newData [][]) {
 		this.oldData=oldData;
@@ -30,7 +31,6 @@ public class ConsistencyChecker {
 				String data_new = HashData.getHashFromString(newData[i][j]);
 				if (!(data_old.equals(data_new))) {
 					System.out.println("Failed Migration");
-					System.out.println("INSANE THE IF STATEMENT TABLE NAME: " + Table);
 					System.out.println(data_old + " not same as " + data_new);
 
 					ConsistencyCheckerUpdate ccu = new ConsistencyCheckerUpdate();
@@ -54,6 +54,7 @@ public class ConsistencyChecker {
 						ccu.updateVisit(oldData[i][0], oldData[i][1], oldData[i][2], oldData[i][3]);
 						break;
 					}
+					errorOccurance++;
 				}
 			}
 		}
@@ -61,11 +62,22 @@ public class ConsistencyChecker {
 	}
 
 	public void thresholdCheck() {
+		
 		if(errorOccurance == 0) {
-			System.out.println("Success! Total amount of rows checked: " + totalRowChecked +  " treshold level: 100%");
+			setThresholdLevel(100);
+			System.out.println("Success! Total amount of rows checked: " + totalRowChecked +  "\ntreshold level: 100%");
 		}else {
-			System.out.println("Error! here are the total row checked: " + totalRowChecked + " treshold level: " + (1-((errorOccurance * 1.0)/totalRowChecked))*100 + "%");
+			setThresholdLevel((1-((errorOccurance * 1.0)/totalRowChecked))*100);
+			System.out.println("Error! here are the total row checked: " + totalRowChecked + "\ntreshold level: " + getThresholdLevel() +"%");
 		}
+	}
+	
+	public void setThresholdLevel(double thresholdLevel) {
+		this.thresholdLevel = thresholdLevel;
+	}
+	
+	public double getThresholdLevel() {
+		return thresholdLevel;
 	}
 
 	public void updateData() {}
