@@ -13,13 +13,13 @@ public class Forklift {
     private static Logger log = LoggerFactory
         .getLogger(Forklift.class);
 
-    private static Connection connMySQL = null;
-    private static Connection connPostgres = null;
-    private static ResultSet resultSet = null;
-    private static Statement statementPostgres = null;
+    private  Connection connMySQL = null;
+    private  Connection connPostgres = null;
+    private  ResultSet resultSet = null;
+    private  Statement statementPostgres = null;
 
     // Will rename this to forklift() so that we can just call it elsewhere
-    public static void main(String [] args){
+    public void forklift(){
 
         try{
             setUpConnection();
@@ -86,7 +86,7 @@ public class Forklift {
        return tables;
     }
 */
-    private static ResultSet getTableData(String tableName){
+    private ResultSet getTableData(String tableName){
 
         Collection<String> tables = null;
         try{
@@ -103,7 +103,7 @@ public class Forklift {
         return resultSet;
     }
 
-    private static void setUpConnection(){
+    private void setUpConnection(){
         String databaseNameMySQL = "petclinic";
         String userNameMySQL = "root";
         String passwordMySQL = "test";
@@ -134,7 +134,7 @@ public class Forklift {
         }
     }
 
-    private static String getInsertIntoValues(String tableName){
+    private String getInsertIntoValues(String tableName){
         ResultSet temp = getTableData(tableName);
         String numValue="";
 
