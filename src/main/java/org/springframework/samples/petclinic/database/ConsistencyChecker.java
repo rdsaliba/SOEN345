@@ -25,11 +25,32 @@ public class ConsistencyChecker {
 		errorOccurance = 0;
 		totalRowChecked = 0;
 		System.out.println("THIS IS THE TABLE NAME: " + Table);
+
+		String [][] tempArray;
+		if(oldData.length > newData.length){
+            tempArray = new String[oldData.length][oldData[0].length];
+            for(int i=0; i<oldData.length; i++) {
+                for (int j = 0; j < oldData[0].length; j++) {
+                    if((newData.length-1)<i) {
+                        tempArray[i][j] = "";
+                        continue;
+                    }
+                    tempArray[i][j] = newData[i][j];
+
+                }
+            }
+            newData = tempArray;
+        }
+
 		for (int i=0; i<oldData.length;i++)
 		{
 			totalRowChecked++;
 			for (int j=0; j<oldData[0].length;j++) {
-				String data_old = HashData.getHashFromString(oldData[i][j]);
+			    System.out.print(oldData[i][j] + ":");
+                System.out.print(oldData[i][j]);
+                System.out.println();
+
+                String data_old = HashData.getHashFromString(oldData[i][j]);
 				String data_new = HashData.getHashFromString(newData[i][j]);
 				if (!(data_old.equals(data_new))) {
 					System.out.println("Failed Migration");

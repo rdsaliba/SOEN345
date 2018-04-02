@@ -136,7 +136,12 @@ public class ConsistencyCheckerUpdate {
             Statement statement = connPostgres.createStatement();
             String query1 =
                 "UPDATE owners SET first_name=" + first_name + " , last_name =" + last_name + " , address=" + address + " , city=" + city + " , telephone=" + telephone + " WHERE id=" + id + ";";
-            resultSet = statement.executeQuery(query1);
+            int count = statement.executeUpdate(query1);
+            if(!(count>0)){
+                String query2 =
+                    "INSERT INTO owners VALUES (" + id + ", " + first_name  + ", " + last_name + ", " + address + ", " + city + ", " + telephone + ");";
+                statement.executeUpdate(query2);
+            }
         } catch (SQLException ce){
             log.info("ClassNotFoundException exception");
         }catch (Exception ce){
@@ -152,6 +157,12 @@ public class ConsistencyCheckerUpdate {
             String query1 =
                 "UPDATE pets SET name=" + name + " , birth_date =" + birth_date + " , type_id=" + type_id + " , owner_id=" + owner_id + " WHERE id=" + id + ";";
             resultSet = statement.executeQuery(query1);
+            int count = statement.executeUpdate(query1);
+            if(!(count>0)){
+                String query2 =
+                    "INSERT INTO pets VALUES("+ id +", " + name + ", " + birth_date + ", " + type_id + ", " + owner_id+ ");";
+                statement.executeUpdate(query2);
+            }
         } catch (SQLException ce){
             log.info("ClassNotFoundException exception");
         }catch (Exception ce){
@@ -166,6 +177,12 @@ public class ConsistencyCheckerUpdate {
             String query1 =
                 "UPDATE specialties SET name=" + name + " WHERE id=" + id + ";";
             resultSet = statement.executeQuery(query1);
+            int count = statement.executeUpdate(query1);
+            if(!(count>0)){
+                String query2 =
+                    "INSERT INTO specialties VALUES("+ id +", " + name + ");";
+                statement.executeUpdate(query2);
+            }
         } catch (SQLException ce){
             log.info("ClassNotFoundException exception");
         }catch (Exception ce){
@@ -180,6 +197,12 @@ public class ConsistencyCheckerUpdate {
             String query1 =
                 "UPDATE types SET name=" + name + " WHERE id=" + id + ";";
             resultSet = statement.executeQuery(query1);
+            int count = statement.executeUpdate(query1);
+            if(!(count>0)){
+                String query2 =
+                    "INSERT INTO types VALUES("+ id +", " + name + ");";
+                statement.executeUpdate(query2);
+            }
         } catch (SQLException ce){
             log.info("ClassNotFoundException exception");
         }catch (Exception ce){
@@ -192,8 +215,14 @@ public class ConsistencyCheckerUpdate {
         try{
             Statement statement = connPostgres.createStatement();
             String query1 =
-                "UPDATE owners SET first_name=" + first_name + " , last_name =" + last_name + " WHERE id=" + id + ";";
+                "UPDATE vets SET first_name=" + first_name + " , last_name =" + last_name + " WHERE id=" + id + ";";
             resultSet = statement.executeQuery(query1);
+            int count = statement.executeUpdate(query1);
+            if(!(count>0)){
+                String query2 =
+                    "INSERT INTO vets VALUES("+ id +", " + first_name +", " + last_name + ");";
+                statement.executeUpdate(query2);
+            }
         } catch (SQLException ce){
             log.info("ClassNotFoundException exception");
         }catch (Exception ce){
@@ -207,8 +236,14 @@ public class ConsistencyCheckerUpdate {
         try{
             Statement statement = connPostgres.createStatement();
             String query1 =
-                "UPDATE pets SET pet_id =" + pet_id + " , visit_date=" + visit_date + " , description=" + description + " WHERE id=" + id + ";";
+                "UPDATE visit SET pet_id =" + pet_id + " , visit_date=" + visit_date + " , description=" + description + " WHERE id=" + id + ";";
             resultSet = statement.executeQuery(query1);
+            int count = statement.executeUpdate(query1);
+            if(!(count>0)){
+                String query2 =
+                    "INSERT INTO visit VALUES("+ id +", " + pet_id +", " + visit_date +", " + description + ");";
+                statement.executeUpdate(query2);
+            }
         } catch (SQLException ce){
             log.info("ClassNotFoundException exception");
         }catch (Exception ce){
