@@ -23,9 +23,7 @@ import org.springframework.samples.petclinic.vet.Vet;
 import org.springframework.samples.petclinic.vet.VetService;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 
 @RunWith(SpringRunner.class)
@@ -55,7 +53,7 @@ public class MigrationTests {
     @Before
     public void setup() {
     	owner = new Owner();
-    	owner.setId(TEST_OWNER_ID);
+    	owner.setId(8);
     	owner.setFirstName("test");
     	owner.setLastName("test");
     	owner.setAddress("110 W. Liberty St.");
@@ -81,93 +79,135 @@ public class MigrationTests {
     }
     
     @Test
-    public void testConsistency() throws Exception {
-    	/// OWNER ///
+    public void testOwnerWrite() throws Exception {
     	//Checks if new and old database insert owner correctly
     	int id = ownerService.saveNew(Database.PRIMARY, owner);
     	int id2 = ownerService.saveNew(Database.SECONDARY, owner);
     	cc = new ConsistencyChecker("Owners");
     	assertEquals(0, cc.checkConsistency("Owners"));
-    	
+    }
+    
+    @Test
+    public void testOwnerWriteFix() throws Exception {
     	//Checks if inconsistent writes are fixed for owner
     	ownerService.saveNew(Database.PRIMARY, owner);
     	cc = new ConsistencyChecker("Owners");
-    	assertEquals(1, cc.checkConsistency("Owners"));
+    	//Consistency checker returns inconsistencies per column
+    	assertEquals(6, cc.checkConsistency("Owners"));
     	assertEquals(0, cc.checkConsistency("Owners"));
-    	
+    }
+    
+    @Test
+    public void testOwnerUpdate() throws Exception {
     	//Checks if new and old database update owner correctly
+    	int id = ownerService.saveNew(Database.PRIMARY, owner);
+    	int id2 = ownerService.saveNew(Database.SECONDARY, owner);
     	owner.setId(id);
     	owner.setAddress("new address");
     	ownerService.update(Database.PRIMARY, owner);
     	ownerService.update(Database.SECONDARY, owner);
     	cc = new ConsistencyChecker("Owners");
     	assertEquals(0, cc.checkConsistency("Owners"));
-    	
+    }
+    
+    @Test
+    public void testOwnerRead() throws Exception {
     	//Checks if reads are consistent in owner
+    	int id = ownerService.saveNew(Database.PRIMARY, owner);
+    	int id2 = ownerService.saveNew(Database.SECONDARY, owner);
     	Owner o1 = ownerService.findById(Database.PRIMARY, id);
     	Owner o2 = ownerService.findById(Database.SECONDARY, id);
     	assertEquals(o1, o2);
     	Collection<Owner> o3 = ownerService.findByLastName(Database.PRIMARY, "test");
     	Collection<Owner> o4 = ownerService.findByLastName(Database.PRIMARY, "test");
     	assertEquals(o3, o4);
-    	
-    	/// PETS ///
+    }
+    
+    @Test
+    public void testPetWrite() throws Exception {
     	//Checks if new and old database insert pet correctly
-    	id = petService.saveNew(Database.PRIMARY, pet);
-    	id2 = petService.saveNew(Database.SECONDARY, pet);
+    	int id = petService.saveNew(Database.PRIMARY, pet);
+    	int id2 = petService.saveNew(Database.SECONDARY, pet);
     	cc = new ConsistencyChecker("Pets");
     	assertEquals(0, cc.checkConsistency("Owners"));
-    	
+    }
+    
+    @Test
+    public void testPetWriterFix() throws Exception {
     	//Checks if inconsistent writes are fixed for pet
     	petService.saveNew(Database.PRIMARY, pet);
     	cc = new ConsistencyChecker("Pets");
-    	assertEquals(1, cc.checkConsistency("Pets"));
+    	assertEquals(5, cc.checkConsistency("Pets"));
     	assertEquals(0, cc.checkConsistency("Pets"));
-    	
+    }
+    
+    @Test
+    public void testPetUpdate() throws Exception {
     	//Checks if new and old database update pet correctly
+    	int id = petService.saveNew(Database.PRIMARY, pet);
+    	int id2 = petService.saveNew(Database.SECONDARY, pet);
     	pet.setId(id);
     	pet.setName("new name");
     	petService.update(Database.PRIMARY, pet);
     	petService.update(Database.SECONDARY, pet);
     	cc = new ConsistencyChecker("Pets");
     	assertEquals(0, cc.checkConsistency("Pets"));
-    	
+    }
+    
+    @Test
+    public void testPetRead() throws Exception {
     	//Checks if reads are consistent in pets
+    	int id = petService.saveNew(Database.PRIMARY, pet);
+    	int id2 = petService.saveNew(Database.SECONDARY, pet);
     	Pet p1 = petService.findById(Database.PRIMARY, id);
     	Pet p2 = petService.findById(Database.SECONDARY, id);
     	assertEquals(p1, p2);
     	Collection<PetType> p3 = petService.findPetTypes(Database.PRIMARY);
     	Collection<PetType> p4 = petService.findPetTypes(Database.SECONDARY);
     	assertEquals(p3, p4);
-    	
-    	/// VISITS ///
+    }
+
+    @Test
+    public void testVisitWrite() throws Exception {
     	//Checks if new and old database insert visit correctly
-    	id = visitService.saveNew(Database.PRIMARY, visit);
-    	id2 = visitService.saveNew(Database.SECONDARY, visit);
+    	int id = visitService.saveNew(Database.PRIMARY, visit);
+    	int id2 = visitService.saveNew(Database.SECONDARY, visit);
     	cc = new ConsistencyChecker("Visits");
     	assertEquals(0, cc.checkConsistency("Visits"));
-    	
-    	//Checks if inconsistent writes are fixed for visit
-    	visitService.saveNew(Database.PRIMARY, visit);
+    }
+
+    @Test
+    public void testVisitWriteFix() throws Exception {
+    	//Checks if new and old database insert visit correctly
+    	int id = visitService.saveNew(Database.PRIMARY, visit);
+    	int id2 = visitService.saveNew(Database.SECONDARY, visit);
     	cc = new ConsistencyChecker("Visits");
-    	assertEquals(1, cc.checkConsistency("Visits"));
     	assertEquals(0, cc.checkConsistency("Visits"));
-    	
+    }
+    
+    @Test
+    public void testVisitUpdate() throws Exception {
     	//Checks if new and old database update visit correctly
+    	int id = visitService.saveNew(Database.PRIMARY, visit);
+    	int id2 = visitService.saveNew(Database.SECONDARY, visit);
     	visit.setId(id);
     	visit.setDescription("new description");
     	visitService.update(Database.PRIMARY, visit);
     	visitService.update(Database.SECONDARY, visit);
     	cc = new ConsistencyChecker("Visits");
     	assertEquals(0, cc.checkConsistency("Visits"));
-    	
+    }
+    
+    @Test
+    public void testVisitRead() throws Exception {
     	//Checks if reads are consistent in visit
     	Collection<Visit> v1 = visitService.findByPetId(Database.PRIMARY, 8);
     	Collection<Visit> v2 = visitService.findByPetId(Database.SECONDARY, 8);
     	assertEquals(v1, v2);
-    	
-    	
-    	/// VETS ///
+    }
+    
+    @Test
+    public void testVetRead() throws Exception {
     	//Checks if reads are consistent in vet
     	Collection<Vet> v3 = vetService.findAll(Database.PRIMARY);
     	Collection<Vet> v4 = vetService.findAll(Database.SECONDARY);
