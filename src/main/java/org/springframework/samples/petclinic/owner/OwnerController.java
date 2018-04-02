@@ -74,7 +74,12 @@ class OwnerController {
         if (result.hasErrors()) {
             return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
         } else {
-            this.owners.save(owner);
+            //Regular write
+            int id = ownerService.saveNew(Database.PRIMARY, owner);
+            //Shadow write
+            ownerService.saveNew(Database.SECONDARY, owner);
+            
+            owner.setId(id);
             return "redirect:/owners/" + owner.getId();
         }
     }
@@ -130,7 +135,11 @@ class OwnerController {
             return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
         } else {
             owner.setId(ownerId);
-            this.owners.save(owner);
+            //Regular write
+            ownerService.update(Database.PRIMARY, owner);
+            //Shadow write
+            ownerService.update(Database.SECONDARY, owner);
+            
             return "redirect:/owners/{ownerId}";
         }
     }
