@@ -26,12 +26,12 @@ public class ConsistencyCheckerUpdate {
     private void setUpConnection(){
         String databaseNameMySQL = "petclinic";
         String userNameMySQL = "root";
-        String passwordMySQL = "pizza123";
+        String passwordMySQL = "test";
         String mySQLPort = "3306";
 
         String databaseNamePostgres = "petclinic";
         String userNamePostgres = "postgres";
-        String passwordPostgres = "laxman123";
+        String passwordPostgres = "test";
         String postgresPort = "5432";
 
         String hostUrl = "localhost";
@@ -165,7 +165,7 @@ public class ConsistencyCheckerUpdate {
         try{
             Statement statement = connPostgres.createStatement();
             String query1 =
-                "UPDATE owners SET first_name=\'" + first_name + "\' AND last_name =\'" + last_name + "\' AND address=\'" + address + "\' AND city=\'" + city + "\' AND telephone=\'" + telephone + "\' WHERE id=" + id + ";";
+                "UPDATE owners SET first_name=" + first_name + " , last_name =" + last_name + " , address=" + address + " , city=" + city + " , telephone=" + telephone + " WHERE id=" + id + ";";
             resultSet = statement.executeQuery(query1);
         } catch (SQLException ce){
             log.info("ClassNotFoundException exception");
@@ -180,7 +180,7 @@ public class ConsistencyCheckerUpdate {
         try{
             Statement statement = connPostgres.createStatement();
             String query1 =
-                "UPDATE pets SET name=\'" + name + "\' AND birth_date =\'" + birth_date + "\' AND type_id=" + type_id + " AND owner_id=" + owner_id + " WHERE id=" + id + ";";
+                "UPDATE pets SET name=" + name + " , birth_date =" + birth_date + " , type_id=" + type_id + " , owner_id=" + owner_id + " WHERE id=" + id + ";";
             resultSet = statement.executeQuery(query1);
         } catch (SQLException ce){
             log.info("ClassNotFoundException exception");
@@ -194,7 +194,7 @@ public class ConsistencyCheckerUpdate {
         try{
             Statement statement = connPostgres.createStatement();
             String query1 =
-                "UPDATE specialties SET name=\'" + name + "\' WHERE id=" + id + ";";
+                "UPDATE specialties SET name=" + name + " WHERE id=" + id + ";";
             resultSet = statement.executeQuery(query1);
         } catch (SQLException ce){
             log.info("ClassNotFoundException exception");
@@ -208,7 +208,7 @@ public class ConsistencyCheckerUpdate {
         try{
             Statement statement = connPostgres.createStatement();
             String query1 =
-                "UPDATE types SET name=\'" + name + "\' WHERE id=" + id + ";";
+                "UPDATE types SET name=" + name + " WHERE id=" + id + ";";
             resultSet = statement.executeQuery(query1);
         } catch (SQLException ce){
             log.info("ClassNotFoundException exception");
@@ -222,7 +222,7 @@ public class ConsistencyCheckerUpdate {
         try{
             Statement statement = connPostgres.createStatement();
             String query1 =
-                "UPDATE owners SET first_name=\'" + first_name + "\' AND last_name =\'" + last_name + "\' WHERE id=" + id + ";";
+                "UPDATE owners SET first_name=" + first_name + " , last_name =" + last_name + " WHERE id=" + id + ";";
             resultSet = statement.executeQuery(query1);
         } catch (SQLException ce){
             log.info("ClassNotFoundException exception");
@@ -237,7 +237,7 @@ public class ConsistencyCheckerUpdate {
         try{
             Statement statement = connPostgres.createStatement();
             String query1 =
-                "UPDATE pets SET pet_id =" + pet_id + " AND visit_date=\'" + visit_date + "\' AND description=\'" + description + "\' WHERE id=" + id + ";";
+                "UPDATE pets SET pet_id =" + pet_id + " , visit_date=" + visit_date + " , description=" + description + " WHERE id=" + id + ";";
             resultSet = statement.executeQuery(query1);
         } catch (SQLException ce){
             log.info("ClassNotFoundException exception");

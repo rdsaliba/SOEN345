@@ -1,7 +1,6 @@
 package org.springframework.samples.petclinic.database;
 
 
-import javax.swing.plaf.synth.SynthSeparatorUI;
 
 import org.springframework.samples.petclinic.database.HashData;
 import org.springframework.samples.petclinic.database.HashGenerationException;
@@ -13,7 +12,7 @@ public class ConsistencyChecker {
 	private String newData [][];
 	private int	errorOccurance;
 	private int totalRowChecked;
-	
+
 	public ConsistencyChecker(String oldData [][],String newData [][]) {
 		this.oldData=oldData;
 		this.newData=newData;
@@ -33,16 +32,16 @@ public class ConsistencyChecker {
 					System.out.println("Failed Migration");
 					System.out.println("INSANE THE IF STATEMENT TABLE NAME: " + Table);
 					System.out.println(data_old + " not same as " + data_new);
-					
+
 					ConsistencyCheckerUpdate ccu = new ConsistencyCheckerUpdate();
 					switch (Table) {
-					case "owners"			: 
+					case "owners"			:
 						ccu.updateOwners(oldData[i][0], oldData[i][1], oldData[i][2], oldData[i][3], oldData[i][4], oldData[i][5]);
 						break;
 					case "types"			:
 						ccu.updateTypes(oldData[i][0], oldData[i][1]);
 						break;
-					case "pets"				:  
+					case "pets"				:
 						ccu.updatePets(oldData[i][0], oldData[i][1], oldData[i][2], oldData[i][3], oldData[i][4]);
 						break;
 					case "specialties"		:
@@ -60,7 +59,7 @@ public class ConsistencyChecker {
 		}
 		thresholdCheck();
 	}
-	
+
 	public void thresholdCheck() {
 		if(errorOccurance == 0) {
 			System.out.println("Success! Total amount of rows checked: " + totalRowChecked +  " treshold level: 100%");

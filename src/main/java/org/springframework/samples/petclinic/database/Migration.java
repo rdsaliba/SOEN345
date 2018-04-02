@@ -15,7 +15,7 @@ public class Migration {
 
 
         ConsistencyCheckerUpdate consistencyCheckerUpdate = new ConsistencyCheckerUpdate();
-/*
+        /*
         for(int i=0; i<temp.length; i++) {
 
             for(int j=0; j<temp[0].length; j++) {
