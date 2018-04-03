@@ -51,8 +51,8 @@ public class Migration {
             //  cleanDbOld.removeOldData();
         }
 
-        // Run Consistency Checker every 30 min
+        // Run Consistency Checker every 15 min
         Timer timer = new Timer();
-        timer.schedule(new ScheduledConsistencyChecker(), 0, 30000);
+        timer.schedule(new ScheduledConsistencyChecker(), 0, 900000);
     }
 }
