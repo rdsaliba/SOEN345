@@ -3,6 +3,8 @@ package org.springframework.samples.petclinic.database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Timer;
+
 public class Migration {
 
     private static Logger log = LoggerFactory
@@ -15,16 +17,7 @@ public class Migration {
 
 
         ConsistencyCheckerUpdate consistencyCheckerUpdate = new ConsistencyCheckerUpdate();
-        /*
-        for(int i=0; i<temp.length; i++) {
 
-            for(int j=0; j<temp[0].length; j++) {
-
-                System.out.println(temp[i][j] + " ");
-
-            }
-        }
-        */
         int count = 0;
         double totalThreshold = 0;
         ConsistencyChecker consistencyChecker;
@@ -48,11 +41,18 @@ public class Migration {
         }catch(Exception e){
 
         }
+
+        System.out.println("The treshold level of all the tables is: " + totalThreshold/count * 100);
+
         // Remove everything from old database
         if(totalThreshold/count > 0.99) {
             CleanOldDatabase cleanDbOld = new CleanOldDatabase();
             // Comment out to not remove the MySQL database for now
-            // cleanDbOld.removeOldData();
+            //  cleanDbOld.removeOldData();
         }
+
+        // Run Consistency Checker every 30 min
+        Timer timer = new Timer();
+        timer.schedule(new ScheduledConsistencyChecker(), 0, 30000);
     }
 }
