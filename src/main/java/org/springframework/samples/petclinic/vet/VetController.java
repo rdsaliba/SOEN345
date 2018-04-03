@@ -51,12 +51,12 @@ class VetController {
         // objects so it is simpler for Object-Xml mapping
         Vets vets = new Vets();
         //Read from main
-        Collection<Vet> vets1 = vetService.findAll(Database.PRIMARY);
+//        Collection<Vet> vets1 = vetService.findAll(Database.PRIMARY);
         //Shadow read
         Collection<Vet> vets2 = vetService.findAll(Database.SECONDARY);
 
-        ConsistencyChecker cc = new ConsistencyChecker("Vets");
-        cc.checkReadConsistency(vets1, vets2, "Vets");
+//        ConsistencyChecker cc = new ConsistencyChecker("Vets");
+//        cc.checkReadConsistency(vets1, vets2, "Vets");
         
         vets.getVetList().addAll(this.vets.findAll());
         model.put("vets", vets);

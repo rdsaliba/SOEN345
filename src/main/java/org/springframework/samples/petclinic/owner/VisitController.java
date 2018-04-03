@@ -90,11 +90,11 @@ class VisitController {
             return "pets/createOrUpdateVisitForm";
         } else {
             //Regular write
-            visitService.saveNew(Database.PRIMARY, visit);
-            //Shadow write
+//            visitService.saveNew(Database.PRIMARY, visit);
+//            //Shadow write
             visitService.saveNew(Database.SECONDARY, visit);
-            ConsistencyChecker cc = new ConsistencyChecker("Visits");
-            cc.checkConsistency("Visits");
+//            ConsistencyChecker cc = new ConsistencyChecker("Visits");
+//            cc.checkConsistency("Visits");
             return "redirect:/owners/{ownerId}";
         }
     }
