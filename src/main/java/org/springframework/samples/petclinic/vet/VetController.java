@@ -19,7 +19,9 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.database.ConsistencyChecker;
 import org.springframework.samples.petclinic.database.Database;
+import org.springframework.samples.petclinic.database.HashGenerationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -44,16 +46,18 @@ class VetController {
     VetService vetService;
     
     @GetMapping("/vets.html")
-    public String showVetList(Map<String, Object> model) {
+    public String showVetList(Map<String, Object> model) throws HashGenerationException {
         // Here we are returning an object of type 'Vets' rather than a collection of Vet
         // objects so it is simpler for Object-Xml mapping
         Vets vets = new Vets();
         //Read from main
         Collection<Vet> vets1 = vetService.findAll(Database.PRIMARY);
-        System.out.println(vets1);
         //Shadow read
         Collection<Vet> vets2 = vetService.findAll(Database.SECONDARY);
-        System.out.println(vets2);
+
+        ConsistencyChecker cc = new ConsistencyChecker("Vets");
+        cc.checkReadConsistency(vets1, vets2, "Vets");
+        
         vets.getVetList().addAll(this.vets.findAll());
         model.put("vets", vets);
         return "vets/vetList";
