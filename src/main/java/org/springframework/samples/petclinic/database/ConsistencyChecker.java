@@ -2,8 +2,7 @@ package org.springframework.samples.petclinic.database;
 
 
 
-import org.springframework.samples.petclinic.database.HashData;
-import org.springframework.samples.petclinic.database.HashGenerationException;
+import java.util.Collection;
 
 public class ConsistencyChecker {
 
@@ -134,4 +133,21 @@ public class ConsistencyChecker {
 	}
 
 	public void updateData() {}
+	
+	public boolean checkReadConsistency(Object a, Object b, String type) throws HashGenerationException {
+		boolean result = a.equals(b);
+		if (result == false) {
+			this.checkConsistency(type);
+		}
+		return result;
+	}
+	
+	public boolean checkReadConsistency(Collection<Object> a, Collection<Object> b, String type) throws HashGenerationException {
+		boolean result = a.equals(b);
+		if (result == false) {
+			this.checkConsistency(type);
+		}
+		return result;
+	}
+	
 }

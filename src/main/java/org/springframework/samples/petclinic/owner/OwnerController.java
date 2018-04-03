@@ -91,7 +91,7 @@ class OwnerController {
     }
 
     @GetMapping("/owners")
-    public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) {
+    public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) throws HashGenerationException {
 
         // allow parameterless GET request for /owners to return all records
         if (owner.getLastName() == null) {
@@ -104,8 +104,8 @@ class OwnerController {
         // Shadow read
         Collection<Owner> results2 = ownerService.findByLastName(Database.SECONDARY, owner.getLastName());
         
-        System.out.println(results1);
-        System.out.println(results2);
+        ConsistencyChecker cc = new ConsistencyChecker("Owners");
+        cc.checkReadConsistency(results1, results2, "Owners");
         
         if (results.isEmpty()) {
             // no owners found
@@ -123,15 +123,15 @@ class OwnerController {
     }
 
     @GetMapping("/owners/{ownerId}/edit")
-    public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
+    public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) throws HashGenerationException {
         // find owners by id
     	Owner owner = this.owners.findById(ownerId);
         Owner owner1 = ownerService.findById(Database.PRIMARY, ownerId);
         // Shadow read
         Owner owner2 = ownerService.findById(Database.SECONDARY, ownerId);
         
-        System.out.println(owner1);
-        System.out.println(owner2);
+        ConsistencyChecker cc = new ConsistencyChecker("Owners");
+        cc.checkReadConsistency(owner1, owner2, "Owners");
     
         model.addAttribute(owner);
         return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
