@@ -44,7 +44,7 @@ public class DatabaseRouter {
             put(Database.PRIMARY, primaryDataSource());
         }};
         RoutingDataSource routingDataSource = new RoutingDataSource();
-        routingDataSource.setDefaultTargetDataSource(primaryDataSource());
+        routingDataSource.setDefaultTargetDataSource(secondaryDataSource());
         routingDataSource.setTargetDataSources(targetDatasources);
         routingDataSource.afterPropertiesSet();
         return routingDataSource;

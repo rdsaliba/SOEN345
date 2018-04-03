@@ -74,11 +74,11 @@ class OwnerController {
             return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
         } else {
             //Regular write
-            int id = ownerService.saveNew(Database.PRIMARY, owner);
+//            int id = ownerService.saveNew(Database.PRIMARY, owner);
             //Shadow write
-            ownerService.saveNew(Database.SECONDARY, owner);
-            ConsistencyChecker cc = new ConsistencyChecker("Owners");
-            cc.checkConsistency("Owners");
+            int id = ownerService.saveNew(Database.SECONDARY, owner);
+//            ConsistencyChecker cc = new ConsistencyChecker("Owners");
+//            cc.checkConsistency("Owners");
             owner.setId(id);
             return "redirect:/owners/" + owner.getId();
         }
@@ -100,13 +100,13 @@ class OwnerController {
 
         // find owners by last name
         Collection<Owner> results = this.owners.findByLastName(owner.getLastName());
-        Collection<Owner> results1 = ownerService.findByLastName(Database.PRIMARY, owner.getLastName());
+//        Collection<Owner> results1 = ownerService.findByLastName(Database.PRIMARY, owner.getLastName());
         // Shadow read
         Collection<Owner> results2 = ownerService.findByLastName(Database.SECONDARY, owner.getLastName());
         
-        ConsistencyChecker cc = new ConsistencyChecker("Owners");
-        cc.checkReadConsistency(results1, results2, "Owners");
-        
+//        ConsistencyChecker cc = new ConsistencyChecker("Owners");
+//        cc.checkReadConsistency(results1, results2, "Owners");
+       
         if (results.isEmpty()) {
             // no owners found
             result.rejectValue("lastName", "notFound", "not found");
@@ -126,12 +126,12 @@ class OwnerController {
     public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) throws HashGenerationException {
         // find owners by id
     	Owner owner = this.owners.findById(ownerId);
-        Owner owner1 = ownerService.findById(Database.PRIMARY, ownerId);
-        // Shadow read
+//        Owner owner1 = ownerService.findById(Database.PRIMARY, ownerId);
+//        // Shadow read
         Owner owner2 = ownerService.findById(Database.SECONDARY, ownerId);
         
-        ConsistencyChecker cc = new ConsistencyChecker("Owners");
-        cc.checkReadConsistency(owner1, owner2, "Owners");
+//        ConsistencyChecker cc = new ConsistencyChecker("Owners");
+//        cc.checkReadConsistency(owner1, owner2, "Owners");
     
         model.addAttribute(owner);
         return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
@@ -144,11 +144,11 @@ class OwnerController {
         } else {
             owner.setId(ownerId);
             //Regular write
-            ownerService.update(Database.PRIMARY, owner);
+//            ownerService.update(Database.PRIMARY, owner);
             //Shadow write
             ownerService.update(Database.SECONDARY, owner);
-            ConsistencyChecker cc = new ConsistencyChecker("Owners");
-            cc.checkConsistency("Owners");
+//            ConsistencyChecker cc = new ConsistencyChecker("Owners");
+//            cc.checkConsistency("Owners");
             return "redirect:/owners/{ownerId}";
         }
     }

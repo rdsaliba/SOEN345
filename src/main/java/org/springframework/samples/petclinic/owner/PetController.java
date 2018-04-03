@@ -61,13 +61,13 @@ class PetController {
     @ModelAttribute("types")
     public Collection<PetType> populatePetTypes() throws HashGenerationException {
         // find owners by last name
-        List<PetType> petTypes = petService.findPetTypes(Database.PRIMARY);
+//        List<PetType> petTypes = petService.findPetTypes(Database.PRIMARY);
         // Shadow read
         List<PetType> petTypes2 = petService.findPetTypes(Database.SECONDARY);
-        System.out.println(petTypes);
-        System.out.println(petTypes2);
-        ConsistencyChecker cc = new ConsistencyChecker("Types");
-        cc.checkReadConsistency(petTypes, petTypes2, "Types");
+//        System.out.println(petTypes);
+//        System.out.println(petTypes2);
+//        ConsistencyChecker cc = new ConsistencyChecker("Types");
+//        cc.checkReadConsistency(petTypes, petTypes2, "Types");
         return this.pets.findPetTypes();
     }
 
@@ -105,11 +105,11 @@ class PetController {
             return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
         } else {
             //Regular write
-            petService.saveNew(Database.PRIMARY, pet);
+//            petService.saveNew(Database.PRIMARY, pet);
             //Shadow write
             petService.saveNew(Database.SECONDARY, pet);
-            ConsistencyChecker cc = new ConsistencyChecker("Pets");
-            cc.checkConsistency("Pets");
+//            ConsistencyChecker cc = new ConsistencyChecker("Pets");
+//            cc.checkConsistency("Pets");
             return "redirect:/owners/{ownerId}";
         }
     }
@@ -117,11 +117,11 @@ class PetController {
     @GetMapping("/pets/{petId}/edit")
     public String initUpdateForm(@PathVariable("petId") int petId, ModelMap model) throws HashGenerationException {
         // find owners by last name
-        Pet pet1 = petService.findById(Database.PRIMARY, petId);
+//        Pet pet1 = petService.findById(Database.PRIMARY, petId);
         // Shadow read
         Pet pet2 = petService.findById(Database.SECONDARY, petId);
-        ConsistencyChecker cc = new ConsistencyChecker("Pets");
-        cc.checkReadConsistency(pet1, pet2, "Pets");
+//        ConsistencyChecker cc = new ConsistencyChecker("Pets");
+//        cc.checkReadConsistency(pet1, pet2, "Pets");
         
         Pet pet = this.pets.findById(petId);
         model.put("pet", pet);
@@ -137,11 +137,11 @@ class PetController {
         } else {
             owner.addPet(pet);
             //Regular write
-            petService.update(Database.PRIMARY, pet);
+//            petService.update(Database.PRIMARY, pet);
             //Shadow write
             petService.update(Database.SECONDARY, pet);
-            ConsistencyChecker cc = new ConsistencyChecker("Pets");
-            cc.checkConsistency("Pets");
+//            ConsistencyChecker cc = new ConsistencyChecker("Pets");
+//            cc.checkConsistency("Pets");
             return "redirect:/owners/{ownerId}";
         }
     }
