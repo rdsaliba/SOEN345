@@ -26,12 +26,12 @@ public class Migration {
 	    	for(String eachTable: tables) {
 
                 String newData [][] = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerPostgres(eachTable);
-                String oldData [][] = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerMySQL(eachTable);
+                String oldData [][] = consistencyCheckerUpdate.getBackupDataHash(eachTable);
 
                 consistencyChecker = new ConsistencyChecker(oldData, newData);
                 count++;
                 try{
-                    consistencyChecker.checkConsistency(eachTable);
+                    consistencyChecker.longTermConsistencyChecker(eachTable);
                     totalThreshold += consistencyChecker.getThresholdLevel();
                 }catch (Exception e){
 

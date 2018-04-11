@@ -17,10 +17,10 @@ public class ConsistencyChecker {
 	public ConsistencyChecker(String type) {
 		ConsistencyCheckerUpdate consistencyCheckerUpdate = new ConsistencyCheckerUpdate();
         this.newData = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerPostgres(type);
-        this.oldData = consistencyCheckerUpdate.getInsertIntoValuesForConsistencyCheckerMySQL(type);
+        this.oldData = consistencyCheckerUpdate.getBackupDataHash(type);
 
 	}
-	
+
 	public ConsistencyChecker(String oldData [][], String newData [][]) {
 		this.oldData=oldData;
 		this.newData=newData;
@@ -90,7 +90,45 @@ public class ConsistencyChecker {
 		return errorOccurance;
 	}
 
-    public void hashData(String Table) throws HashGenerationException {
+    public int longTermConsistencyChecker(String Table) throws HashGenerationException {
+        errorOccurance = 0;
+        totalRowChecked = 0;
+        System.out.println("THIS IS THE TABLE NAME: " + Table);
+
+        String[][] tempArray;
+        if (oldData.length > newData.length) {
+            tempArray = new String[oldData.length][oldData[0].length];
+            for (int i = 0; i < oldData.length; i++) {
+                for (int j = 0; j < oldData[0].length; j++) {
+                    if ((newData.length - 1) < i) {
+                        tempArray[i][j] = "";
+                        continue;
+                    }
+                    tempArray[i][j] = newData[i][j];
+
+                }
+            }
+            newData = tempArray;
+        }
+
+        for (int i = 0; i < oldData.length; i++) {
+            totalRowChecked++;
+            for (int j = 0; j < oldData[0].length; j++) {
+                String data_old = this.oldData[i][1];
+                String data_new = HashData.getHashFromString(newData[i][j]);
+                if (!(data_old.equals(data_new))) {
+                    errorOccurance++;
+                    System.out.println("Failed Migration");
+                    System.out.println(data_old + " not same as " + data_new);
+
+                    break;
+                }
+            }
+        }
+        return errorOccurance;
+    }
+
+        public void hashData(String Table) throws HashGenerationException {
 
         for (int i=0; i<oldData.length;i++)
         {
@@ -129,7 +167,7 @@ public class ConsistencyChecker {
 	}
 
 	public void updateData() {}
-	
+
 	public boolean checkReadConsistency(Object a, Object b, String type) throws HashGenerationException {
 		boolean result = a.equals(b);
 		if (result == false) {
@@ -137,7 +175,7 @@ public class ConsistencyChecker {
 		}
 		return result;
 	}
-	
+
 	public boolean checkReadConsistency(Collection<Object> a, Collection<Object> b, String type) throws HashGenerationException {
 		boolean result = a.equals(b);
 		if (result == false) {
@@ -145,5 +183,5 @@ public class ConsistencyChecker {
 		}
 		return result;
 	}
-	
+
 }

@@ -42,6 +42,24 @@ public class ConsistencyCheckerUpdate {
         return resultSet;
     }
 
+    // Use connection type to get table data from either postgres or mysql
+    private ResultSet getBackupTableData(String tableName, Connection connection){
+
+        Collection<String> tables = null;
+        try{
+            Statement statement = connection.createStatement();
+            String query1 =
+                "SELECT hash FROM backup_hash WHERE table_name="+tableName+ " ORDER BY row_number ASC;";
+            resultSet = statement.executeQuery(query1);
+        } catch (SQLException ce){
+            log.info("ClassNotFoundException exception");
+        }catch (Exception ce){
+            log.info("Unexpected Exception");
+        }
+
+        return resultSet;
+    }
+
     // Get MySQL table rows for table
     public String[][] getInsertIntoValuesForConsistencyCheckerMySQL(String tableName){
         ResultSet temp = null;
@@ -117,7 +135,47 @@ public class ConsistencyCheckerUpdate {
                 tempRow=1;
                 temp = getTableData(tableName, connPostgres);;
             }
+        } catch (SQLException se){
+            log.info("SQLException exception");
+        }catch (Exception ce){
+            log.info("Unexpected Exception");
+        } finally {
 
+            return testing;
+        }
+    }
+
+    // Get Postgres table rows for table
+    public String[][] getBackupDataHash(String tableName){
+        ResultSet temp = null;
+
+        temp = getBackupTableData(tableName, connPostgres);
+
+        String numValue="";
+        String testing[][] = null;
+
+        try{
+            ResultSetMetaData rsmd = getBackupTableData(tableName, connPostgres).getMetaData();
+            int rowCount = 0;
+            while (temp.next())
+            {
+                ++rowCount;
+            }
+            int columnCount = rsmd.getColumnCount();
+            String columnName = rsmd.getColumnName(1);
+            testing = new String[rowCount][columnCount];
+            temp = getBackupTableData(tableName, connPostgres);
+
+            int tempRow = 1;
+            for (int x = 1; x <= columnCount; ++x) {
+                while(temp.next())
+                {
+                    testing[tempRow-1][x-1] = "\'" + temp.getString(x) + "\'";
+                    tempRow++;
+                }
+                tempRow=1;
+                temp = getBackupTableData(tableName, connPostgres);;
+            }
 
         } catch (SQLException se){
             log.info("SQLException exception");
@@ -128,6 +186,7 @@ public class ConsistencyCheckerUpdate {
             return testing;
         }
     }
+
 
     // Method to update owners in Postgres
     public void updateOwners(String id, String first_name, String last_name, String address, String city, String telephone){
